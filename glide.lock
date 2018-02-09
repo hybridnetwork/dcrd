@@ -47,9 +47,11 @@ imports:
 - name: github.com/decred/bitset
   version: 484b833245d5f9046e2893a6bd2e54b1df3a53a4
 - name: github.com/decred/dcrrpcclient
-  version: abc326aeb97b299c7eb6b13b81353fc375e9b95d
+  version: d7f871a5a75d57c8fce17961bf287d16eb0e90ea
+  repo: file:///Users/jacobmcdorman/go/src/github.com/decred/dcrrpcclient
 - name: github.com/decred/dcrutil
-  version: 166211f0196be1d3be344ae64149e7c4f5ca36b0
+  version: 25e0047fb75923ab75ace09bbd50b4a0fd8b8785
+  repo: file:///Users/jacobmcdorman/go/src/github.com/decred/dcrutil
   subpackages:
   - base58
   - bloom
@@ -60,6 +62,13 @@ imports:
   version: a93b200c26cbae3bb09dd0dc2c7c7fe1468a034a
   subpackages:
   - rotator
+- name: github.com/LoCCS/bliss
+  version: f3305c265fccfe3d0ce2f9677fa902f9679c58a4
+  subpackages:
+  - huffman
+  - params
+  - poly
+  - sampler
 - name: golang.org/x/crypto
   version: 81e90905daefcd6fd217b62423c0908922eadb30
   subpackages:
