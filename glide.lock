@@ -47,11 +47,11 @@ imports:
 - name: github.com/decred/bitset
   version: 484b833245d5f9046e2893a6bd2e54b1df3a53a4
 - name: github.com/decred/dcrrpcclient
-  version: d7f871a5a75d57c8fce17961bf287d16eb0e90ea
-  repo: file:///Users/jacobmcdorman/go/src/github.com/decred/dcrrpcclient
-- name: github.com/decred/dcrutil
-  version: 25e0047fb75923ab75ace09bbd50b4a0fd8b8785
-  repo: file:///Users/jacobmcdorman/go/src/github.com/decred/dcrutil
+  repo: git@github.com/hybridnetwork/hxd/hxrpcclient
+  version: post-quataum
+- name:  github.com/decred/dcrutil
+  repo: git@github.com/hybridnetwork/hxd/hxutil
+  version: post-quataum
   subpackages:
   - base58
   - bloom
