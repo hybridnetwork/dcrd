@@ -47,10 +47,10 @@ imports:
 - name: github.com/decred/bitset
   version: 484b833245d5f9046e2893a6bd2e54b1df3a53a4
 - name: github.com/decred/dcrrpcclient
-  repo: git@github.com/hybridnetwork/hxd/hxrpcclient
+  repo: git@github.com:hybridnetwork/hxrpcclient
   version: post-quataum
 - name:  github.com/decred/dcrutil
-  repo: git@github.com/hybridnetwork/hxd/hxutil
+  repo: git@github.com:hybridnetwork/hxutil
   version: post-quataum
   subpackages:
   - base58

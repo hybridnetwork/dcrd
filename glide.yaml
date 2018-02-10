@@ -30,10 +30,10 @@ import:
 - package: github.com/dchest/blake256
 - package: github.com/decred/bitset
 - package: github.com/decred/dcrrpcclient
-  repo: git@github.com/hybridnetwork/hxd/hxrpcclient
+  repo: git@github.com:hybridnetwork/hxrpcclient
   version: post-quataum
 - package: github.com/decred/dcrutil
-  repo: git@github.com/hybridnetwork/hxd/hxutil
+  repo: git@github.com:hybridnetwork/hxutil
   version: post-quataum
   subpackages:
   - bloom
