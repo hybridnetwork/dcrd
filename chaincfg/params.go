@@ -458,13 +458,8 @@ type Params struct {
 var MainNetParams = Params{
 	Name:        "mainnet",
 	Net:         wire.MainNet,
-	DefaultPort: "9108",
-	DNSSeeds: []string{
-		"mainnet-seed.decred.mindcry.org",
-		"mainnet-seed.decred.netpurgatory.com",
-		"mainnet.decredseed.org",
-		"mainnet-seed.decred.org",
-	},
+	DefaultPort: "14008",
+	DNSSeeds:    []string{},
 
 	// Chain parameters
 	GenesisBlock:             &genesisBlock,
@@ -493,21 +488,7 @@ var MainNetParams = Params{
 	BlockTaxProportion:       1,
 
 	// Checkpoints ordered from oldest to newest.
-	Checkpoints: []Checkpoint{
-		{440, newHashFromStr("0000000000002203eb2c95ee96906730bb56b2985e174518f90eb4db29232d93")},
-		{24480, newHashFromStr("0000000000000c9d4239c4ef7ef3fb5aaeed940244bc69c57c8c5e1f071b28a6")},
-		{48590, newHashFromStr("0000000000000d5e0de21a96d3c965f5f2db2c82612acd7389c140c9afe92ba7")},
-		{54770, newHashFromStr("00000000000009293d067b1126b7de07fc9b2b94ee50dfe0d48c239a7adb072c")},
-		{60720, newHashFromStr("0000000000000a64475d68ffb9ad89a3d147c0f5138db26b40da9d19d0004117")},
-		{65270, newHashFromStr("0000000000000021f107601962789b201f0a0cbb98ac5f8c12b93d94e795b441")},
-		{75380, newHashFromStr("0000000000000e7d13cfc85806aa720fe3670980f5b7d33253e4f41985558372")},
-		{85410, newHashFromStr("00000000000013ec928074bea6eac9754aa614c7acb20edf300f18b0cd122692")},
-		{99880, newHashFromStr("0000000000000cb2a9a9ded647b9f78aae51ace32dd8913701d420ead272913c")},
-		{123080, newHashFromStr("000000000000009ea6e02d0f0424f445ed50686f9ae4aecdf3b268e981114477")},
-		{135960, newHashFromStr("00000000000001d2f9bbca9177972c0ba45acb40836b72945a75d73b99079498")},
-		{139740, newHashFromStr("00000000000001397179ae1aff156fb1aea228938d06b83e43b78b1c44527b5b")},
-		{155900, newHashFromStr("000000000000008557e37fb05177fc5a54e693de20689753639135f85a2dcb2e")},
-	},
+	Checkpoints: []Checkpoint{},
 
 	// The miner confirmation window is defined as:
 	//   target proof of work timespan / target proof of work spacing
@@ -590,12 +571,12 @@ var MainNetParams = Params{
 	NetworkAddressPrefix: "H",
 	PubKeyAddrID:         [2]byte{0x19, 0xa4}, // starts with Hk
 	PubKeyBlissAddrID:    [2]byte{0x07, 0xc3}, // starts with Hk
- 	PubKeyHashAddrID:     [2]byte{0x09, 0x7f}, // starts with Hs
- 	PKHEdwardsAddrID:     [2]byte{0x09, 0x60}, // starts with He
- 	PKHSchnorrAddrID:     [2]byte{0x09, 0x41}, // starts with HS
+	PubKeyHashAddrID:     [2]byte{0x09, 0x7f}, // starts with Hs
+	PKHEdwardsAddrID:     [2]byte{0x09, 0x60}, // starts with He
+	PKHSchnorrAddrID:     [2]byte{0x09, 0x41}, // starts with HS
 	PKHBlissAddrID:       [2]byte{0x09, 0x57}, // starts with Hb
- 	ScriptHashAddrID:     [2]byte{0x09, 0x5a}, // starts with Hc
- 	PrivateKeyID:         [2]byte{0x19, 0xab}, // starts with Hm
+	ScriptHashAddrID:     [2]byte{0x09, 0x5a}, // starts with Hc
+	PrivateKeyID:         [2]byte{0x19, 0xab}, // starts with Hm
 
 	// BIP32 hierarchical deterministic extended key magics
 	HDPrivateKeyID: [4]byte{0x02, 0xfd, 0xa4, 0xe8}, // starts with dprv
@@ -638,13 +619,8 @@ var MainNetParams = Params{
 var TestNet2Params = Params{
 	Name:        "testnet2",
 	Net:         wire.TestNet2,
-	DefaultPort: "19108",
-	DNSSeeds: []string{
-		"testnet-seed.decred.mindcry.org",
-		"testnet-seed.decred.netpurgatory.org",
-		"testnet.decredseed.org",
-		"testnet-seed.decred.org",
-	},
+	DefaultPort: "12008",
+	DNSSeeds:    []string{},
 
 	// Chain parameters
 	GenesisBlock:             &testNet2GenesisBlock,
@@ -673,15 +649,7 @@ var TestNet2Params = Params{
 	BlockTaxProportion:       1,
 
 	// Checkpoints ordered from oldest to newest.
-	Checkpoints: []Checkpoint{
-		{12500, newHashFromStr("000000000046db2b18647632bac76577e418a5cdd8508a2f1cd82a6b30c3e854")},
-		{25000, newHashFromStr("0000000000970b7f74178ba6bc3426cd2a65ab854c04e92f542567843f5612a2")},
-		{37500, newHashFromStr("0000000000e5f9b3eb57259439694d3f12cd3b485cca54089fe3d4cc5c7c3e51")},
-		{50000, newHashFromStr("0000000005bcc5dd36ba08523d32a3a581f1ef7376929f5b89757d1c9ced4154")},
-		{62500, newHashFromStr("0000000003c0223971c732c49f019f449b494fdb822b67eb178fa4cf5d3b16ef")},
-		{80000, newHashFromStr("0000000004239806fb02243757c0cd04f2103ad2c20d2afbdf21fafbd114ef60")},
-		{97500, newHashFromStr("0000000003e41de65086786c253d2bf5259419cc15d1c1382b3d7bd69dcf7d45")},
-	},
+	Checkpoints: []Checkpoint{},
 
 	// Consensus rule change deployments.
 	//
@@ -791,7 +759,7 @@ var TestNet2Params = Params{
 var SimNetParams = Params{
 	Name:        "simnet",
 	Net:         wire.SimNet,
-	DefaultPort: "18555",
+	DefaultPort: "13008",
 	DNSSeeds:    []string{}, // NOTE: There must NOT be any seeds.
 
 	// Chain parameters
