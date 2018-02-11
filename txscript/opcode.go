@@ -18,8 +18,8 @@ import (
 	"github.com/decred/dcrd/chaincfg"
 	"github.com/decred/dcrd/chaincfg/chainec"
 	"github.com/decred/dcrd/chaincfg/chainhash"
-	"github.com/decred/dcrd/wire"
 	bs "github.com/decred/dcrd/crypto/bliss"
+	"github.com/decred/dcrd/wire"
 )
 
 var optimizeSigVerification = chaincfg.SigHashOptimization
@@ -2782,8 +2782,8 @@ func opcodeCheckSigAlt(op *parsedOpcode, vm *Engine) error {
 			return nil
 		}
 	case bliss:
-		if len(pkBytes) !=  897 {
-			fmt.Printf("pub key length is not 417, length:%v\n", len(pkBytes))
+		if len(pkBytes) != 897 {
+			fmt.Printf("pub key length is not 897, length:%v\n", len(pkBytes))
 			vm.dstack.PushBool(false)
 			return nil
 		}

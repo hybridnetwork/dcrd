@@ -36,7 +36,7 @@ const (
 const (
 	MaxOpsPerScript       = 255  // Max number of non-push operations.
 	MaxPubKeysPerMultiSig = 20   // Multisig can't have more sigs than this.
-	MaxScriptElementSize  = 2048 // Max bytes pushable to the stack.
+	MaxScriptElementSize  = 4096 // Max bytes pushable to the stack.
 )
 
 // isSmallInt returns whether or not the opcode is considered a small integer,
@@ -164,10 +164,10 @@ func parseAltScriptTemplate(script []byte, opcodes *[256]opcode) ([]parsedOpcode
 			off := i + 1
 
 			if len(script[off:]) < -op.length {
-				
+
 				return retScript, ErrStackShortScript
 			}
- 
+
 			// Next -length bytes are little endian length of data.
 			switch op.length {
 			case -1:
@@ -192,7 +192,7 @@ func parseAltScriptTemplate(script []byte, opcodes *[256]opcode) ([]parsedOpcode
 			// Disallow entries that do not fit script or were
 			// sign extended.
 			if int(l) > len(script[off:]) || int(l) < 0 {
-		
+
 				return retScript, ErrStackShortScript
 			}
 
@@ -284,7 +284,7 @@ func parseScriptTemplate(script []byte, opcodes *[256]opcode) ([]parsedOpcode,
 // parseScript preparses the script in bytes into a list of parsedOpcodes while
 // applying a number of sanity checks.
 func parseScript(script []byte) ([]parsedOpcode, error) {
-	if len(script) == 26{
+	if len(script) == 26 {
 		return parseAltScriptTemplate(script, &opcodeArray)
 	}
 	return parseScriptTemplate(script, &opcodeArray)

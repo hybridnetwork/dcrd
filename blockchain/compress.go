@@ -9,8 +9,8 @@ import (
 
 	"github.com/decred/dcrd/blockchain/stake"
 	"github.com/decred/dcrd/chaincfg/chainec"
-	"github.com/decred/dcrd/txscript"
 	"github.com/decred/dcrd/crypto/bliss"
+	"github.com/decred/dcrd/txscript"
 )
 
 // currentCompressionVersion is the current script compression version of the
@@ -170,11 +170,9 @@ const (
 	// an uncompressed pubkey whose y coordinate is odd when compressed.
 	cstPayToPubKeyUncompOdd = 5
 
-
 	// cstPayToPubKeyHashBliss identifies a compressed pay-to-pubkey script to
 	// a bliss pubkey.
 	cstPayToPubKeyHashBliss = 6
-
 
 	// numSpecialScripts is the number of special scripts possibly recognized
 	// by the domain-specific script compression algorithm. It is one more
@@ -298,6 +296,11 @@ func compressedScriptSize(scriptVersion uint16, pkScript []byte,
 	compressionVersion uint32) int {
 	// Pay-to-pubkey-hash script.
 	if valid, _ := isPubKeyHash(pkScript); valid {
+		return 21
+	}
+
+	// Pay-to-alternative-pubkey-hash script.
+	if valid, _, _ := isPubKeyHashAlt(pkScript); valid {
 		return 21
 	}
 
@@ -492,7 +495,6 @@ func decompressScript(compressedPkScript []byte,
 		copy(pkScript[1:], key.SerializeUncompressed())
 		pkScript[66] = txscript.OP_CHECKSIG
 		return pkScript
-
 
 	// bliss Pay-to-pubkey-hash script. The resulting script is:
 	// <OP_DUP><OP_HASH160><20 byte hash><OP_EQUALVERIFY><OP_CHECKSIGAL>
