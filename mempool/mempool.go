@@ -108,14 +108,21 @@ type Config struct {
 	// the current best chain.
 	BestHeight func() int64
 
+	// PastMedianTime defines the function to use in order to access the
+	// median time calculated from the point-of-view of the current chain
+	// tip within the best chain.
+	PastMedianTime func() time.Time
+
+	// CalcSequenceLock defines the function to use in order to generate
+	// the current sequence lock for the given transaction using the passed
+	// utxo view.
+	CalcSequenceLock func(*dcrutil.Tx, *blockchain.UtxoViewpoint) (*blockchain.SequenceLock, error)
+
 	// SubsidyCache defines a subsidy cache to use.
 	SubsidyCache *blockchain.SubsidyCache
 
 	// SigCache defines a signature cache to use.
 	SigCache *txscript.SigCache
-
-	// TimeSource defines the timesource to use.
-	TimeSource blockchain.MedianTimeSource
 
 	// AddrIndex defines the optional address index instance to use for
 	// indexing the unconfirmed transactions in the memory pool.
@@ -171,6 +178,14 @@ type Policy struct {
 	// AllowOldVotes defines whether or not votes on old blocks will be
 	// admitted and relayed.
 	AllowOldVotes bool
+
+	// StandardVerifyFlags defines the function to retrieve the flags to
+	// use for verifying scripts for the block after the current best block.
+	// It must set the verification flags properly depending on the result
+	// of any agendas that affect them.
+	//
+	// This function must be safe for concurrent access.
+	StandardVerifyFlags func() (txscript.ScriptFlags, error)
 }
 
 // TxDesc is a descriptor containing a transaction in the mempool along with
@@ -821,9 +836,10 @@ func (mp *TxPool) maybeAcceptTransaction(tx *dcrutil.Tx, isNew, rateLimit, allow
 
 	// Don't allow non-standard transactions if the network parameters
 	// forbid their relaying.
+	medianTime := mp.cfg.PastMedianTime()
 	if !mp.cfg.Policy.RelayNonStd {
 		err := checkTransactionStandard(tx, txType, nextBlockHeight,
-			mp.cfg.TimeSource, mp.cfg.Policy.MinRelayTxFee,
+			medianTime, mp.cfg.Policy.MinRelayTxFee,
 			mp.cfg.Policy.MaxTxVersion)
 		if err != nil {
 			// Attempt to extract a reject code from the error so
@@ -978,6 +994,21 @@ func (mp *TxPool) maybeAcceptTransaction(tx *dcrutil.Tx, isNew, rateLimit, allow
 
 	if len(missingParents) > 0 {
 		return missingParents, nil
+	}
+
+	// Don't allow the transaction into the mempool unless its sequence
+	// lock is active, meaning that it'll be allowed into the next block
+	// with respect to its defined relative lock times.
+	seqLock, err := mp.cfg.CalcSequenceLock(tx, utxoView)
+	if err != nil {
+		if cerr, ok := err.(blockchain.RuleError); ok {
+			return nil, chainRuleError(cerr)
+		}
+		return nil, err
+	}
+	if !blockchain.SequenceLockActive(seqLock, nextBlockHeight, medianTime) {
+		return nil, txRuleError(wire.RejectNonstandard,
+			"transaction sequence locks on inputs not met")
 	}
 
 	// Perform several checks on the transaction inputs using the invariant
@@ -1138,8 +1169,12 @@ func (mp *TxPool) maybeAcceptTransaction(tx *dcrutil.Tx, isNew, rateLimit, allow
 
 	// Verify crypto signatures for each input and reject the transaction if
 	// any don't verify.
-	err = blockchain.ValidateTransactionScripts(tx, utxoView,
-		txscript.StandardVerifyFlags, mp.cfg.SigCache)
+	flags, err := mp.cfg.Policy.StandardVerifyFlags()
+	if err != nil {
+		return nil, err
+	}
+	err = blockchain.ValidateTransactionScripts(tx, utxoView, flags,
+		mp.cfg.SigCache)
 	if err != nil {
 		if cerr, ok := err.(blockchain.RuleError); ok {
 			return nil, chainRuleError(cerr)

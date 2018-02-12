@@ -11,6 +11,7 @@ import (
 	"reflect"
 	"sync"
 	"testing"
+	"time"
 
 	"github.com/decred/dcrd/blockchain"
 	"github.com/decred/dcrd/chaincfg"
@@ -32,6 +33,8 @@ type fakeChain struct {
 	blocks        map[chainhash.Hash]*dcrutil.Block
 	currentHash   chainhash.Hash
 	currentHeight int64
+	medianTime    time.Time
+	scriptFlags   txscript.ScriptFlags
 }
 
 // NextStakeDifficulty returns the next stake difficulty associated with the
@@ -130,6 +133,44 @@ func (s *fakeChain) SetHeight(height int64) {
 	s.Lock()
 	s.currentHeight = height
 	s.Unlock()
+}
+
+// PastMedianTime returns the current median time associated with the fake chain
+// instance.
+func (s *fakeChain) PastMedianTime() time.Time {
+	s.RLock()
+	medianTime := s.medianTime
+	s.RUnlock()
+	return medianTime
+}
+
+// SetPastMedianTime sets the current median time associated with the fake chain
+// instance.
+func (s *fakeChain) SetPastMedianTime(medianTime time.Time) {
+	s.Lock()
+	s.medianTime = medianTime
+	s.Unlock()
+}
+
+// CalcSequenceLock returns the current sequence lock for the passed transaction
+// associated with the fake chain instance.
+func (s *fakeChain) CalcSequenceLock(tx *dcrutil.Tx, view *blockchain.UtxoViewpoint) (*blockchain.SequenceLock, error) {
+	return &blockchain.SequenceLock{
+		MinHeight: -1,
+		MinTime:   -1,
+	}, nil
+}
+
+// StandardVerifyFlags returns the standard verification script flags associated
+// with the fake chain instance.
+func (s *fakeChain) StandardVerifyFlags() (txscript.ScriptFlags, error) {
+	return s.scriptFlags, nil
+}
+
+// SetStandardVerifyFlags sets the standard verification script flags associated
+// with the fake chain instance.
+func (s *fakeChain) SetStandardVerifyFlags(flags txscript.ScriptFlags) {
+	s.scriptFlags = flags
 }
 
 // spendableOutput is a convenience type that houses a particular utxo and the
@@ -328,8 +369,9 @@ func newPoolHarness(chainParams *chaincfg.Params) (*poolHarness, []spendableOutp
 	// Create a new fake chain and harness bound to it.
 	subsidyCache := blockchain.NewSubsidyCache(0, chainParams)
 	chain := &fakeChain{
-		utxos:  blockchain.NewUtxoViewpoint(),
-		blocks: make(map[chainhash.Hash]*dcrutil.Block),
+		utxos:       blockchain.NewUtxoViewpoint(),
+		blocks:      make(map[chainhash.Hash]*dcrutil.Block),
+		scriptFlags: BaseStandardVerifyFlags,
 	}
 	harness := poolHarness{
 		signKey:     signKey,
@@ -347,6 +389,7 @@ func newPoolHarness(chainParams *chaincfg.Params) (*poolHarness, []spendableOutp
 				MaxOrphanTxSize:      1000,
 				MaxSigOpsPerTx:       blockchain.MaxSigOpsPerBlock / 5,
 				MinRelayTxFee:        1000, // 1 Satoshi per byte
+				StandardVerifyFlags:  chain.StandardVerifyFlags,
 			},
 			ChainParams:         chainParams,
 			NextStakeDifficulty: chain.NextStakeDifficulty,
@@ -354,9 +397,10 @@ func newPoolHarness(chainParams *chaincfg.Params) (*poolHarness, []spendableOutp
 			BlockByHash:         chain.BlockByHash,
 			BestHash:            chain.BestHash,
 			BestHeight:          chain.BestHeight,
+			PastMedianTime:      chain.PastMedianTime,
+			CalcSequenceLock:    chain.CalcSequenceLock,
 			SubsidyCache:        subsidyCache,
 			SigCache:            nil,
-			TimeSource:          blockchain.NewMedianTime(),
 			AddrIndex:           nil,
 			ExistsAddrIndex:     nil,
 		}),
@@ -379,6 +423,7 @@ func newPoolHarness(chainParams *chaincfg.Params) (*poolHarness, []spendableOutp
 		outputs = append(outputs, txOutToSpendableOut(coinbase, i))
 	}
 	harness.chain.SetHeight(int64(chainParams.CoinbaseMaturity) + curHeight)
+	harness.chain.SetPastMedianTime(time.Now())
 
 	return &harness, outputs, nil
 }

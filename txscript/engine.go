@@ -27,11 +27,11 @@ const (
 	ScriptStrictMultiSig
 
 	// ScriptDiscourageUpgradableNops defines whether to verify that
-	// NOP1 through NOP10 are reserved for future soft-fork upgrades.  This
-	// flag must not be used for consensus critical code nor applied to
-	// blocks as this flag is only for stricter standard transaction
-	// checks.  This flag is only applied when the above opcodes are
-	// executed.
+	// currently unused opcodes in the NOP and UNKNOWN families are reserved
+	// for future upgrades.  This flag must not be used for consensus
+	// critical code nor applied to blocks as this flag is only for stricter
+	// standard transaction checks.  This flag is only applied when the
+	// above opcodes are executed.
 	ScriptDiscourageUpgradableNops
 
 	// ScriptVerifyCheckLockTimeVerify defines whether to verify that
@@ -70,6 +70,11 @@ const (
 	// ScriptVerifyStrictEncoding defines that signature scripts and
 	// public keys must follow the strict encoding requirements.
 	ScriptVerifyStrictEncoding
+
+	// ScriptVerifySHA256 defines whether to treat opcode 192 (previously
+	// OP_UNKNOWN192) as the OP_SHA256 opcode which consumes the top item of
+	// the data stack and replaces it with the sha256 of it.
+	ScriptVerifySHA256
 )
 
 const (

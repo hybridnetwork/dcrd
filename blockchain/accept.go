@@ -63,11 +63,9 @@ func checkCoinbaseUniqueHeight(blockHeight int64, block *dcrutil.Block) error {
 }
 
 // IsFinalizedTransaction determines whether or not a transaction is finalized.
-func IsFinalizedTransaction(tx *dcrutil.Tx, blockHeight int64,
-	blockTime time.Time) bool {
-	msgTx := tx.MsgTx()
-
+func IsFinalizedTransaction(tx *dcrutil.Tx, blockHeight int64, blockTime time.Time) bool {
 	// Lock time of zero means the transaction is finalized.
+	msgTx := tx.MsgTx()
 	lockTime := msgTx.LockTime
 	if lockTime == 0 {
 		return true
@@ -137,24 +135,37 @@ func (b *BlockChain) checkBlockContext(block *dcrutil.Block, prevNode *blockNode
 			return ruleError(ErrBlockTooBig, str)
 		}
 
+		// Switch to using the past median time of the block prior to
+		// the block being checked for all checks related to lock times
+		// once the stake vote for the agenda is active.
+		blockTime := header.Timestamp
+		lnFeaturesActive, err := b.isLNFeaturesAgendaActive(prevNode)
+		if err != nil {
+			return err
+		}
+		if lnFeaturesActive {
+			medianTime, err := b.calcPastMedianTime(prevNode)
+			if err != nil {
+				return err
+			}
+
+			blockTime = medianTime
+		}
+
 		// The height of this block is one more than the referenced
 		// previous block.
 		blockHeight := prevNode.height + 1
 
 		// Ensure all transactions in the block are finalized.
 		for _, tx := range block.Transactions() {
-			if !IsFinalizedTransaction(tx, blockHeight,
-				header.Timestamp) {
-
+			if !IsFinalizedTransaction(tx, blockHeight, blockTime) {
 				str := fmt.Sprintf("block contains unfinalized regular "+
 					"transaction %v", tx.Hash())
 				return ruleError(ErrUnfinalizedTx, str)
 			}
 		}
 		for _, stx := range block.STransactions() {
-			if !IsFinalizedTransaction(stx, blockHeight,
-				header.Timestamp) {
-
+			if !IsFinalizedTransaction(stx, blockHeight, blockTime) {
 				str := fmt.Sprintf("block contains unfinalized stake "+
 					"transaction %v", stx.Hash())
 				return ruleError(ErrUnfinalizedTx, str)
@@ -256,13 +267,10 @@ func (b *BlockChain) maybeAcceptBlock(block *dcrutil.Block, flags BehaviorFlags)
 		return false, err
 	}
 
-	// Prune stake nodes and block nodes which are no longer needed before
-	// creating a new node.
+	// Prune stake nodes which are no longer needed before creating a new
+	// node.
 	if !dryRun {
-		err := b.pruner.pruneChainIfNeeded()
-		if err != nil {
-			return false, err
-		}
+		b.pruner.pruneChainIfNeeded()
 	}
 
 	// Create a new block node for the block and add it to the in-memory

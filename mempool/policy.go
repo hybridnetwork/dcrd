@@ -7,6 +7,7 @@ package mempool
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/decred/dcrd/blockchain"
 	"github.com/decred/dcrd/blockchain/stake"
@@ -55,6 +56,22 @@ const (
 	// in a multi-signature transaction output script for it to be
 	// considered standard.
 	maxStandardMultiSigKeys = 3
+
+	// BaseStandardVerifyFlags defines the script flags that should be used
+	// when executing transaction scripts to enforce additional checks which
+	// are required for the script to be considered standard regardless of
+	// the state of any agenda votes.  The full set of standard verification
+	// flags must include these flags as well as any additional flags that
+	// are conditionally enabled depending on the result of agenda votes.
+	BaseStandardVerifyFlags = txscript.ScriptBip16 |
+		txscript.ScriptVerifyDERSignatures |
+		txscript.ScriptVerifyStrictEncoding |
+		txscript.ScriptVerifyMinimalData |
+		txscript.ScriptDiscourageUpgradableNops |
+		txscript.ScriptVerifyCleanStack |
+		txscript.ScriptVerifyCheckLockTimeVerify |
+		txscript.ScriptVerifyCheckSequenceVerify |
+		txscript.ScriptVerifyLowS
 )
 
 // calcMinRequiredTxRelayFee returns the minimum transaction fee required for a
@@ -347,7 +364,7 @@ func isDust(txOut *wire.TxOut, minRelayTxFee dcrutil.Amount) bool {
 // of recognized forms, and not containing "dust" outputs (those that are
 // so small it costs more to process them than they are worth).
 func checkTransactionStandard(tx *dcrutil.Tx, txType stake.TxType, height int64,
-	timeSource blockchain.MedianTimeSource, minRelayTxFee dcrutil.Amount,
+	medianTime time.Time, minRelayTxFee dcrutil.Amount,
 	maxTxVersion uint16) error {
 
 	// The transaction must be a currently supported version and serialize
@@ -366,8 +383,7 @@ func checkTransactionStandard(tx *dcrutil.Tx, txType stake.TxType, height int64,
 
 	// The transaction must be finalized to be standard and therefore
 	// considered for inclusion in a block.
-	adjustedTime := timeSource.AdjustedTime()
-	if !blockchain.IsFinalizedTransaction(tx, height, adjustedTime) {
+	if !blockchain.IsFinalizedTransaction(tx, height, medianTime) {
 		return txRuleError(wire.RejectNonstandard,
 			"transaction is not finalized")
 	}

@@ -32,11 +32,11 @@ const (
 	// will require changes to the generated block.  Using the wire constant
 	// for generated block version could allow creation of invalid blocks
 	// for the updated version.
-	generatedBlockVersion = 4
+	generatedBlockVersion = 5
 
 	// generatedBlockVersionTest is the version of the block being generated
 	// for networks other than the main network.
-	generatedBlockVersionTest = 5
+	generatedBlockVersionTest = 6
 
 	// blockHeaderOverhead is the max number of bytes it takes to serialize
 	// a block header and max possible transaction count.
@@ -1149,6 +1149,19 @@ func NewBlockTemplate(policy *mining.Policy, server *server,
 	chainState := &blockManager.chainState
 	subsidyCache := blockManager.chain.FetchSubsidyCache()
 
+	// All transaction scripts are verified using the more strict standarad
+	// flags.
+	scriptFlags, err := standardScriptVerifyFlags(blockManager.chain)
+	if err != nil {
+		return nil, err
+	}
+
+	// Lock times are relative to the past median time of the block this
+	// template is building on.
+	chainState.Lock()
+	medianTime := chainState.pastMedianTime
+	chainState.Unlock()
+
 	// Extend the most recently known best block.
 	// The most recently known best block is the top block that has the most
 	// ssgen votes for it. We only need this after the height in which stake voting
@@ -1299,7 +1312,7 @@ mempoolLoop:
 			continue
 		}
 		if !blockchain.IsFinalizedTransaction(tx, nextBlockHeight,
-			timeSource.AdjustedTime()) {
+			medianTime) {
 
 			minrLog.Tracef("Skipping non-finalized tx %s", tx.Hash())
 			continue
@@ -1599,7 +1612,7 @@ mempoolLoop:
 			continue
 		}
 		err = blockchain.ValidateTransactionScripts(tx, blockUtxos,
-			txscript.StandardVerifyFlags, server.sigCache)
+			scriptFlags, server.sigCache)
 		if err != nil {
 			minrLog.Tracef("Skipping tx %s due to error in "+
 				"ValidateTransactionScripts: %v", tx.Hash(), err)

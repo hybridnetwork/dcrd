@@ -8,6 +8,7 @@ package txscript
 import (
 	"bytes"
 	"crypto/sha1"
+	"crypto/sha256"
 	"encoding/binary"
 	"errors"
 	"fmt"
@@ -208,7 +209,7 @@ const (
 	OP_WITHIN              = 0xa5 // 165
 	OP_RIPEMD160           = 0xa6 // 166
 	OP_SHA1                = 0xa7 // 167
-	OP_SHA256              = 0xa8 // 168
+	OP_BLAKE256            = 0xa8 // 168
 	OP_HASH160             = 0xa9 // 169
 	OP_HASH256             = 0xaa // 170
 	OP_CODESEPARATOR       = 0xab // 171
@@ -234,7 +235,7 @@ const (
 	OP_SSTXCHANGE          = 0xbd // 189 DECRED
 	OP_CHECKSIGALT         = 0xbe // 190 DECRED
 	OP_CHECKSIGALTVERIFY   = 0xbf // 191 DECRED
-	OP_UNKNOWN192          = 0xc0 // 192
+	OP_SHA256              = 0xc0 // 192
 	OP_UNKNOWN193          = 0xc1 // 193
 	OP_UNKNOWN194          = 0xc2 // 194
 	OP_UNKNOWN195          = 0xc3 // 195
@@ -499,6 +500,7 @@ var opcodeArray = [256]opcode{
 	OP_RIPEMD160:           {OP_RIPEMD160, "OP_RIPEMD160", 1, opcodeRipemd160},
 	OP_SHA1:                {OP_SHA1, "OP_SHA1", 1, opcodeSha1},
 	OP_SHA256:              {OP_SHA256, "OP_SHA256", 1, opcodeSha256},
+	OP_BLAKE256:            {OP_BLAKE256, "OP_BLAKE256", 1, opcodeBlake256},
 	OP_HASH160:             {OP_HASH160, "OP_HASH160", 1, opcodeHash160},
 	OP_HASH256:             {OP_HASH256, "OP_HASH256", 1, opcodeHash256},
 	OP_CODESEPARATOR:       {OP_CODESEPARATOR, "OP_CODESEPARATOR", 1, opcodeDisabled}, // Disabled
@@ -528,7 +530,6 @@ var opcodeArray = [256]opcode{
 	OP_CHECKSIGALTVERIFY: {OP_CHECKSIGALTVERIFY, "OP_CHECKSIGALTVERIFY", 1, opcodeCheckSigAltVerify},
 
 	// Undefined opcodes.
-	OP_UNKNOWN192: {OP_UNKNOWN192, "OP_UNKNOWN192", 1, opcodeNop},
 	OP_UNKNOWN193: {OP_UNKNOWN193, "OP_UNKNOWN193", 1, opcodeNop},
 	OP_UNKNOWN194: {OP_UNKNOWN194, "OP_UNKNOWN194", 1, opcodeNop},
 	OP_UNKNOWN195: {OP_UNKNOWN195, "OP_UNKNOWN195", 1, opcodeNop},
@@ -863,7 +864,7 @@ func opcodeNop(op *parsedOpcode, vm *Engine) error {
 	switch op.opcode.value {
 	case OP_NOP1, OP_NOP4, OP_NOP5, OP_NOP6,
 		OP_NOP7, OP_NOP8, OP_NOP9, OP_NOP10,
-		OP_UNKNOWN192, OP_UNKNOWN193, OP_UNKNOWN194, OP_UNKNOWN195,
+		OP_UNKNOWN193, OP_UNKNOWN194, OP_UNKNOWN195,
 		OP_UNKNOWN196, OP_UNKNOWN197, OP_UNKNOWN198, OP_UNKNOWN199,
 		OP_UNKNOWN200, OP_UNKNOWN201, OP_UNKNOWN202, OP_UNKNOWN203,
 		OP_UNKNOWN204, OP_UNKNOWN205, OP_UNKNOWN206, OP_UNKNOWN207,
@@ -880,7 +881,7 @@ func opcodeNop(op *parsedOpcode, vm *Engine) error {
 		OP_UNKNOWN248:
 
 		if vm.hasFlag(ScriptDiscourageUpgradableNops) {
-			return fmt.Errorf("%s reserved for soft-fork upgrades",
+			return fmt.Errorf("%s reserved for upgrades",
 				op.opcode.name)
 		}
 	}
@@ -1117,11 +1118,6 @@ func opcodeCheckSequenceVerify(op *parsedOpcode, vm *Engine) error {
 		return nil
 	}
 
-	if vm.tx.Version < 2 {
-		return fmt.Errorf("invalid transaction version: %d",
-			vm.tx.Version)
-	}
-
 	// The current transaction sequence is a uint32 resulting in a maximum
 	// sequence of 2^32-1.  However, scriptNums are signed and therefore a
 	// standard 4-byte scriptNum would only support up to a maximum of
@@ -1154,6 +1150,13 @@ func opcodeCheckSequenceVerify(op *parsedOpcode, vm *Engine) error {
 	// CHECKSEQUENCEVERIFY behaves as a NOP.
 	if sequence&int64(wire.SequenceLockTimeDisabled) != 0 {
 		return nil
+	}
+
+	// Transaction version numbers not high enough to trigger CSV rules must
+	// fail.
+	if vm.tx.Version < 2 {
+		return fmt.Errorf("invalid transaction version: %d",
+			vm.tx.Version)
 	}
 
 	// Sequence numbers with their most significant bit set are not
@@ -2332,11 +2335,11 @@ func opcodeSha1(op *parsedOpcode, vm *Engine) error {
 	return nil
 }
 
-// opcodeSha256 treats the top item of the data stack as raw bytes and replaces
-// it with hash256(data).
+// opcodeBlake256 treats the top item of the data stack as raw bytes and
+// replaces it with blake256(data).
 //
-// Stack transformation: [... x1] -> [... hash256(x1)]
-func opcodeSha256(op *parsedOpcode, vm *Engine) error {
+// Stack transformation: [... x1] -> [... blake256(x1)]
+func opcodeBlake256(op *parsedOpcode, vm *Engine) error {
 	buf, err := vm.dstack.PopByteArray()
 	if err != nil {
 		return err
@@ -2347,10 +2350,34 @@ func opcodeSha256(op *parsedOpcode, vm *Engine) error {
 	return nil
 }
 
-// opcodeHash160 treats the top item of the data stack as raw bytes and replaces
-// it with ripemd160(hash256(data)).
+// opcodeSha256 treats the top item of the data stack as raw bytes and replaces
+// it with sha256(data).
 //
-// Stack transformation: [... x1] -> [... ripemd160(hash256(x1))]
+// Stack transformation: [... x1] -> [... sha256(x1)]
+func opcodeSha256(op *parsedOpcode, vm *Engine) error {
+	// Treat the opcode as OP_UNKNOWN192 if the flag to interpret it as the
+	// SHA256 opcode is not set.
+	if !vm.hasFlag(ScriptVerifySHA256) {
+		if vm.hasFlag(ScriptDiscourageUpgradableNops) {
+			return errors.New("OP_UNKNOWN192 reserved for upgrades")
+		}
+		return nil
+	}
+
+	buf, err := vm.dstack.PopByteArray()
+	if err != nil {
+		return err
+	}
+
+	hash := sha256.Sum256(buf)
+	vm.dstack.PushByteArray(hash[:])
+	return nil
+}
+
+// opcodeHash160 treats the top item of the data stack as raw bytes and replaces
+// it with ripemd160(blake256(data)).
+//
+// Stack transformation: [... x1] -> [... ripemd160(blake256(x1))]
 func opcodeHash160(op *parsedOpcode, vm *Engine) error {
 	buf, err := vm.dstack.PopByteArray()
 	if err != nil {
@@ -2363,9 +2390,9 @@ func opcodeHash160(op *parsedOpcode, vm *Engine) error {
 }
 
 // opcodeHash256 treats the top item of the data stack as raw bytes and replaces
-// it with hash256(hash256(data)).
+// it with blake256(blake256(data)).
 //
-// Stack transformation: [... x1] -> [... hash256(hash256(x1))]
+// Stack transformation: [... x1] -> [... blake256(blake256(x1))]
 func opcodeHash256(op *parsedOpcode, vm *Engine) error {
 	buf, err := vm.dstack.PopByteArray()
 	if err != nil {

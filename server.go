@@ -2213,6 +2213,25 @@ out:
 	s.wg.Done()
 }
 
+// standardScriptVerifyFlags returns the script flags that should be used when
+// executing transaction scripts to enforce additional checks which are required
+// for the script to be considered standard.  Note these flags are different
+// than what is required for the consensus rules in that they are more strict.
+func standardScriptVerifyFlags(chain *blockchain.BlockChain) (txscript.ScriptFlags, error) {
+	scriptFlags := mempool.BaseStandardVerifyFlags
+
+	// Enable validation of OP_SHA256 if the stake vote for the agenda is
+	// active.
+	isActive, err := chain.IsLNFeaturesAgendaActive()
+	if err != nil {
+		return 0, err
+	}
+	if isActive {
+		scriptFlags |= txscript.ScriptVerifySHA256
+	}
+	return scriptFlags, nil
+}
+
 // newServer returns a new dcrd server configured to listen on addr for the
 // decred network type specified by chainParams.  Use start to begin accepting
 // connections from peers.
@@ -2412,7 +2431,7 @@ func newServer(listenAddrs []string, db database.DB, chainParams *chaincfg.Param
 
 	txC := mempool.Config{
 		Policy: mempool.Policy{
-			MaxTxVersion:         1,
+			MaxTxVersion:         2,
 			DisableRelayPriority: cfg.NoRelayPriority,
 			RelayNonStd:          cfg.RelayNonStd,
 			FreeTxRelayLimit:     cfg.FreeTxRelayLimit,
@@ -2421,6 +2440,9 @@ func newServer(listenAddrs []string, db database.DB, chainParams *chaincfg.Param
 			MaxSigOpsPerTx:       blockchain.MaxSigOpsPerBlock / 5,
 			MinRelayTxFee:        cfg.minRelayTxFee,
 			AllowOldVotes:        cfg.AllowOldVotes,
+			StandardVerifyFlags: func() (txscript.ScriptFlags, error) {
+				return standardScriptVerifyFlags(bm.chain)
+			},
 		},
 		ChainParams: chainParams,
 		NextStakeDifficulty: func() (int64, error) {
@@ -2429,15 +2451,16 @@ func newServer(listenAddrs []string, db database.DB, chainParams *chaincfg.Param
 			bm.chainState.Unlock()
 			return sDiff, nil
 		},
-		FetchUtxoView:   bm.chain.FetchUtxoView,
-		BlockByHash:     bm.chain.BlockByHash,
-		BestHash:        func() *chainhash.Hash { return bm.chain.BestSnapshot().Hash },
-		BestHeight:      func() int64 { return bm.chain.BestSnapshot().Height },
-		SubsidyCache:    bm.chain.FetchSubsidyCache(),
-		SigCache:        s.sigCache,
-		TimeSource:      s.timeSource,
-		AddrIndex:       s.addrIndex,
-		ExistsAddrIndex: s.existsAddrIndex,
+		FetchUtxoView:    bm.chain.FetchUtxoView,
+		BlockByHash:      bm.chain.BlockByHash,
+		BestHash:         func() *chainhash.Hash { return bm.chain.BestSnapshot().Hash },
+		BestHeight:       func() int64 { return bm.chain.BestSnapshot().Height },
+		CalcSequenceLock: bm.chain.CalcSequenceLock,
+		SubsidyCache:     bm.chain.FetchSubsidyCache(),
+		SigCache:         s.sigCache,
+		PastMedianTime:   func() time.Time { return bm.chain.BestSnapshot().MedianTime },
+		AddrIndex:        s.addrIndex,
+		ExistsAddrIndex:  s.existsAddrIndex,
 	}
 	s.txMemPool = mempool.New(&txC)
 
