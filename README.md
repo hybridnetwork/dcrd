@@ -1,7 +1,7 @@
 hxd
 ====
 
-[![Build Status](https://travis-ci.org/hybridnetwork/hxd.png?branch=master)](https://travis-ci.org/hybridnetwork/hxd)
+[![Build Status](https://travis-ci.org/hybridnetwork/hxd.png?branch=dev-v0.0.1)](https://travis-ci.org/hybridnetwork/hxd)
 [![ISC License](http://img.shields.io/badge/license-ISC-blue.svg)](http://copyfree.org)
 
 hxd is a Hx full node implementation written in Go (golang).
