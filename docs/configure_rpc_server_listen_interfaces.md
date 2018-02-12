@@ -1,4 +1,4 @@
-dcrd allows you to bind the RPC server to specific interfaces which enables you
+hxd allows you to bind the RPC server to specific interfaces which enables you
 to setup configurations with varying levels of complexity.  The `rpclisten`
 parameter can be specified on the command line as shown below with the -- prefix
 or in the configuration file without the -- prefix (as can all long command line
@@ -27,18 +27,18 @@ Command Line Examples:
 |--rpclisten=|all interfaces on default port which is changed by `--testnet`|
 |--rpclisten=0.0.0.0|all IPv4 interfaces on default port which is changed by `--testnet`|
 |--rpclisten=::|all IPv6 interfaces on default port which is changed by `--testnet`|
-|--rpclisten=:9109|all interfaces on port 9109|
-|--rpclisten=0.0.0.0:9109|all IPv4 interfaces on port 9109|
-|--rpclisten=[::]:9109|all IPv6 interfaces on port 9109|
-|--rpclisten=127.0.0.1:9109|only IPv4 localhost on port 9109|
-|--rpclisten=[::1]:9109|only IPv6 localhost on port 9109|
+|--rpclisten=:14009|all interfaces on port 14009|
+|--rpclisten=0.0.0.0:14009|all IPv4 interfaces on port 14009|
+|--rpclisten=[::]:14009|all IPv6 interfaces on port 14009|
+|--rpclisten=127.0.0.1:14009|only IPv4 localhost on port 14009|
+|--rpclisten=[::1]:14009|only IPv6 localhost on port 14009|
 |--rpclisten=:8336|all interfaces on non-standard port 8336|
 |--rpclisten=0.0.0.0:8336|all IPv4 interfaces on non-standard port 8336|
 |--rpclisten=[::]:8336|all IPv6 interfaces on non-standard port 8336|
-|--rpclisten=127.0.0.1:8337 --listen=[::1]:9109|IPv4 localhost on port 8337 and IPv6 localhost on port 9109|
-|--rpclisten=:9109 --listen=:8337|all interfaces on ports 9109 and 8337|
+|--rpclisten=127.0.0.1:8337 --listen=[::1]:14009|IPv4 localhost on port 8337 and IPv6 localhost on port 14009|
+|--rpclisten=:14009 --listen=:8337|all interfaces on ports 14009 and 8337|
 
-The following config file would configure the dcrd RPC server to listen to all interfaces on the default port, including external interfaces, for both IPv4 and IPv6:
+The following config file would configure the hxd RPC server to listen to all interfaces on the default port, including external interfaces, for both IPv4 and IPv6:
 
 ```text
 [Application Options]

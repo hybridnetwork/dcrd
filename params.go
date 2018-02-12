@@ -29,21 +29,21 @@ type params struct {
 // to emulate the full reference implementation RPC API.
 var mainNetParams = params{
 	Params:  &chaincfg.MainNetParams,
-	rpcPort: "9109",
+	rpcPort: "14009",
 }
 
 // testNet2Params contains parameters specific to the test network (version 2)
 // (wire.TestNet2).
 var testNet2Params = params{
 	Params:  &chaincfg.TestNet2Params,
-	rpcPort: "19109",
+	rpcPort: "12009",
 }
 
 // simNetParams contains parameters specific to the simulation test network
 // (wire.SimNet).
 var simNetParams = params{
 	Params:  &chaincfg.SimNetParams,
-	rpcPort: "19556",
+	rpcPort: "13009",
 }
 
 // netName returns the name used when referring to a decred network.  At the

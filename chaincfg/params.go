@@ -357,12 +357,14 @@ type Params struct {
 	NetworkAddressPrefix string
 
 	// Address encoding magics
-	PubKeyAddrID     [2]byte // First 2 bytes of a P2PK address
-	PubKeyHashAddrID [2]byte // First 2 bytes of a P2PKH address
-	PKHEdwardsAddrID [2]byte // First 2 bytes of an Edwards P2PKH address
-	PKHSchnorrAddrID [2]byte // First 2 bytes of a secp256k1 Schnorr P2PKH address
-	ScriptHashAddrID [2]byte // First 2 bytes of a P2SH address
-	PrivateKeyID     [2]byte // First 2 bytes of a WIF private key
+	PubKeyAddrID      [2]byte // First 2 bytes of a P2PK address
+	PubKeyBlissAddrID [2]byte // First 2 bytes of a P2PK bliss address
+	PubKeyHashAddrID  [2]byte // First 2 bytes of a P2PKH address
+	PKHEdwardsAddrID  [2]byte // First 2 bytes of an Edwards P2PKH address
+	PKHSchnorrAddrID  [2]byte // First 2 bytes of a secp256k1 Schnorr P2PKH address
+	PKHBlissAddrID    [2]byte // First 2 bytes of a Bliss P2PKH address
+	ScriptHashAddrID  [2]byte // First 2 bytes of a P2SH address
+	PrivateKeyID      [2]byte // First 2 bytes of a WIF private key
 
 	// BIP32 hierarchical deterministic extended key magics
 	HDPrivateKeyID [4]byte
@@ -461,13 +463,8 @@ type Params struct {
 var MainNetParams = Params{
 	Name:        "mainnet",
 	Net:         wire.MainNet,
-	DefaultPort: "9108",
-	DNSSeeds: []string{
-		"mainnet-seed.decred.mindcry.org",
-		"mainnet-seed.decred.netpurgatory.com",
-		"mainnet.decredseed.org",
-		"mainnet-seed.decred.org",
-	},
+	DefaultPort: "14008",
+	DNSSeeds:    []string{},
 
 	// Chain parameters
 	GenesisBlock:             &genesisBlock,
@@ -496,6 +493,7 @@ var MainNetParams = Params{
 	BlockTaxProportion:       1,
 
 	// Checkpoints ordered from oldest to newest.
+<<<<<<< HEAD
 	Checkpoints: []Checkpoint{
 		{440, newHashFromStr("0000000000002203eb2c95ee96906730bb56b2985e174518f90eb4db29232d93")},
 		{24480, newHashFromStr("0000000000000c9d4239c4ef7ef3fb5aaeed940244bc69c57c8c5e1f071b28a6")},
@@ -512,6 +510,9 @@ var MainNetParams = Params{
 		{155900, newHashFromStr("000000000000008557e37fb05177fc5a54e693de20689753639135f85a2dcb2e")},
 		{164300, newHashFromStr("000000000000009ed067ff51cd5e15f3c786222a5183b20a991a80ce535907a9")},
 	},
+=======
+	Checkpoints: []Checkpoint{},
+>>>>>>> bogrod-pqdev
 
 	// The miner confirmation window is defined as:
 	//   target proof of work timespan / target proof of work spacing
@@ -619,13 +620,15 @@ var MainNetParams = Params{
 	RelayNonStdTxs: false,
 
 	// Address encoding magics
-	NetworkAddressPrefix: "D",
-	PubKeyAddrID:         [2]byte{0x13, 0x86}, // starts with Dk
-	PubKeyHashAddrID:     [2]byte{0x07, 0x3f}, // starts with Ds
-	PKHEdwardsAddrID:     [2]byte{0x07, 0x1f}, // starts with De
-	PKHSchnorrAddrID:     [2]byte{0x07, 0x01}, // starts with DS
-	ScriptHashAddrID:     [2]byte{0x07, 0x1a}, // starts with Dc
-	PrivateKeyID:         [2]byte{0x22, 0xde}, // starts with Pm
+	NetworkAddressPrefix: "H",
+	PubKeyAddrID:         [2]byte{0x19, 0xa4}, // starts with Hk
+	PubKeyBlissAddrID:    [2]byte{0x07, 0xc3}, // starts with Hk
+	PubKeyHashAddrID:     [2]byte{0x09, 0x7f}, // starts with Hs
+	PKHEdwardsAddrID:     [2]byte{0x09, 0x60}, // starts with He
+	PKHSchnorrAddrID:     [2]byte{0x09, 0x41}, // starts with HS
+	PKHBlissAddrID:       [2]byte{0x09, 0x57}, // starts with Hb
+	ScriptHashAddrID:     [2]byte{0x09, 0x5a}, // starts with Hc
+	PrivateKeyID:         [2]byte{0x19, 0xab}, // starts with Hm
 
 	// BIP32 hierarchical deterministic extended key magics
 	HDPrivateKeyID: [4]byte{0x02, 0xfd, 0xa4, 0xe8}, // starts with dprv
@@ -668,13 +671,8 @@ var MainNetParams = Params{
 var TestNet2Params = Params{
 	Name:        "testnet2",
 	Net:         wire.TestNet2,
-	DefaultPort: "19108",
-	DNSSeeds: []string{
-		"testnet-seed.decred.mindcry.org",
-		"testnet-seed.decred.netpurgatory.org",
-		"testnet.decredseed.org",
-		"testnet-seed.decred.org",
-	},
+	DefaultPort: "12008",
+	DNSSeeds:    []string{},
 
 	// Chain parameters
 	GenesisBlock:             &testNet2GenesisBlock,
@@ -703,6 +701,7 @@ var TestNet2Params = Params{
 	BlockTaxProportion:       1,
 
 	// Checkpoints ordered from oldest to newest.
+<<<<<<< HEAD
 	Checkpoints: []Checkpoint{
 		{12500, newHashFromStr("000000000046db2b18647632bac76577e418a5cdd8508a2f1cd82a6b30c3e854")},
 		{25000, newHashFromStr("0000000000970b7f74178ba6bc3426cd2a65ab854c04e92f542567843f5612a2")},
@@ -714,6 +713,9 @@ var TestNet2Params = Params{
 		{110000, newHashFromStr("0000000003913d67af849f3dded4dd17038d366ff5c418be56f193ea574acf63")},
 		{122500, newHashFromStr("0000000005db46602bc7146c87cd396db74696819c6685f0c61e9194e6278b07")},
 	},
+=======
+	Checkpoints: []Checkpoint{},
+>>>>>>> bogrod-pqdev
 
 	// Consensus rule change deployments.
 	//
@@ -798,9 +800,11 @@ var TestNet2Params = Params{
 	// Address encoding magics
 	NetworkAddressPrefix: "T",
 	PubKeyAddrID:         [2]byte{0x28, 0xf7}, // starts with Tk
+	PubKeyBlissAddrID:    [2]byte{0x0b, 0xf0}, // starts with Tk
 	PubKeyHashAddrID:     [2]byte{0x0f, 0x21}, // starts with Ts
 	PKHEdwardsAddrID:     [2]byte{0x0f, 0x01}, // starts with Te
 	PKHSchnorrAddrID:     [2]byte{0x0e, 0xe3}, // starts with TS
+	PKHBlissAddrID:       [2]byte{0x0e, 0xf8}, // starts with Tb
 	ScriptHashAddrID:     [2]byte{0x0e, 0xfc}, // starts with Tc
 	PrivateKeyID:         [2]byte{0x23, 0x0e}, // starts with Pt
 
@@ -849,7 +853,7 @@ var TestNet2Params = Params{
 var SimNetParams = Params{
 	Name:        "simnet",
 	Net:         wire.SimNet,
-	DefaultPort: "18555",
+	DefaultPort: "13008",
 	DNSSeeds:    []string{}, // NOTE: There must NOT be any seeds.
 
 	// Chain parameters
@@ -861,7 +865,7 @@ var SimNetParams = Params{
 	MinDiffReductionTime:     0, // Does not apply since ReduceMinDifficulty false
 	GenerateSupported:        true,
 	MaximumBlockSizes:        []int{1000000, 1310720},
-	MaxTxSize:                1000000,
+	MaxTxSize:                2048000,
 	TargetTimePerBlock:       time.Second,
 	WorkDiffAlpha:            1,
 	WorkDiffWindowSize:       8,
@@ -992,9 +996,11 @@ var SimNetParams = Params{
 	// Address encoding magics
 	NetworkAddressPrefix: "S",
 	PubKeyAddrID:         [2]byte{0x27, 0x6f}, // starts with Sk
+	PubKeyBlissAddrID:    [2]byte{0x0b, 0xef}, // starts with Sk
 	PubKeyHashAddrID:     [2]byte{0x0e, 0x91}, // starts with Ss
 	PKHEdwardsAddrID:     [2]byte{0x0e, 0x71}, // starts with Se
 	PKHSchnorrAddrID:     [2]byte{0x0e, 0x53}, // starts with SS
+	PKHBlissAddrID:       [2]byte{0x0e, 0x68}, // starts with Sb
 	ScriptHashAddrID:     [2]byte{0x0e, 0x6c}, // starts with Sc
 	PrivateKeyID:         [2]byte{0x23, 0x07}, // starts with Ps
 

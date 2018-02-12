@@ -19,6 +19,7 @@ import (
 	"github.com/decred/dcrd/txscript"
 	"github.com/decred/dcrd/wire"
 	"github.com/decred/dcrutil"
+	"github.com/decred/dcrd/crypto/bliss"
 )
 
 const (
@@ -67,6 +68,13 @@ const (
 	// the hash of a pubkey address might be the same as that of a script
 	// hash.
 	addrKeyTypeScriptHash = 3
+
+
+	// addrKeyTypePubKeyHashBliss is the address type in an address key which
+	// represents both a bliss pay-to-pubkey-hash and a bliss pay-to-pubkey address.
+	// This is done because both are identical for the purposes of the
+	// address index.
+	addrKeyTypePubKeyHashBliss = 4
 
 	// Size of a transaction entry.  It consists of 4 bytes block id + 4
 	// bytes offset + 4 bytes length.
@@ -551,6 +559,11 @@ func addrToKey(addr dcrutil.Address, params *chaincfg.Params) ([addrKeySize]byte
 			result[0] = addrKeyTypePubKeyHashSchnorr
 			copy(result[1:], addr.Hash160()[:])
 			return result, nil
+		case bliss.BSTypeBliss:
+			var result [addrKeySize]byte
+			result[0] = addrKeyTypePubKeyHashBliss
+			copy(result[1:], addr.Hash160()[:])
+			return result, nil
 		}
 
 	case *dcrutil.AddressScriptHash:
@@ -574,6 +587,12 @@ func addrToKey(addr dcrutil.Address, params *chaincfg.Params) ([addrKeySize]byte
 	case *dcrutil.AddressSecSchnorrPubKey:
 		var result [addrKeySize]byte
 		result[0] = addrKeyTypePubKeyHashSchnorr
+		copy(result[1:], addr.AddressPubKeyHash().Hash160()[:])
+		return result, nil
+
+	case *dcrutil.AddressBlissPubKey:
+		var result [addrKeySize]byte
+		result[0] = addrKeyTypePubKeyHashBliss
 		copy(result[1:], addr.AddressPubKeyHash().Hash160()[:])
 		return result, nil
 	}
