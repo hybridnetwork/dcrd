@@ -1,5 +1,5 @@
-hash: 5ff55cbde58db9eecfef0a796b2513f910996d6aaa1244f31475852835e48efe
-updated: 2017-08-30T23:46:58.835362449Z
+hash: 51385853431fbf4f49a3fcb9ed10b0037fd3396820cf4a0ba47e5bb6bc11c212
+updated: 2018-02-12T09:37:31.791312-08:00
 imports:
 - name: github.com/agl/ed25519
   version: 278e1ec8e8a6e017cd07577924d6766039146ced
@@ -39,7 +39,7 @@ imports:
   - svc
   - winapi
 - name: github.com/davecgh/go-spew
-  version: adab96458c51a58dc1783b3335dcce5461522e75
+  version: 04cdfd42973bb9c8589fd6a731800cf222fde1a9
   subpackages:
   - spew
 - name: github.com/dchest/blake256
@@ -47,35 +47,37 @@ imports:
 - name: github.com/decred/bitset
   version: 484b833245d5f9046e2893a6bd2e54b1df3a53a4
 - name: github.com/decred/dcrrpcclient
+  version: 0a7aad955071bdb370b51241921bc5b33ef98e07
   repo: git@github.com:hybridnetwork/hxrpcclient
-  version: post-quataum
-- name:  github.com/decred/dcrutil
+- name: github.com/decred/dcrutil
+  version: 2b17f77942ebf011524d214add76ade79e722d4d
   repo: git@github.com:hybridnetwork/hxutil
-  version: post-quataum
   subpackages:
   - base58
   - bloom
   - hdkeychain
-- name: github.com/jessevdk/go-flags
-  version: 48cf8722c3375517aba351d1f7577c40663a4407
-- name: github.com/jrick/logrotate
-  version: a93b200c26cbae3bb09dd0dc2c7c7fe1468a034a
-  subpackages:
-  - rotator
-- name: github.com/LoCCS/bliss
-  version: f3305c265fccfe3d0ce2f9677fa902f9679c58a4
+- name: github.com/hybridnetwork/bliss
+  version: c8db82ca164de7f42f68de1bf1bc8e83f7589ba0
   subpackages:
   - huffman
   - params
   - poly
   - sampler
+- name: github.com/jessevdk/go-flags
+  version: 96dc06278ce32a0e9d957d590bb987c81ee66407
+- name: github.com/jrick/logrotate
+  version: a93b200c26cbae3bb09dd0dc2c7c7fe1468a034a
+  subpackages:
+  - rotator
 - name: golang.org/x/crypto
-  version: 81e90905daefcd6fd217b62423c0908922eadb30
+  version: 9de5f2eaf759b4c4550b3db39fed2e9e5f86f45c
   subpackages:
   - ripemd160
+  - sha3
   - ssh/terminal
 - name: golang.org/x/sys
-  version: bb24a47a89eac6c1227fbcb2ae37a8b9ed323366
+  version: 9f7170bcd8e9f4d3691c06401119c46a769a1e03
   subpackages:
   - unix
+  - windows
 testImports: []
