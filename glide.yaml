@@ -48,4 +48,4 @@ import:
 - package: github.com/jrick/logrotate
   subpackages:
   - rotator
-- package: github.com/LoCCS/bliss
+- package: github.com/hybridnetwork/bliss

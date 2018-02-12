@@ -1,11 +1,11 @@
 package bliss
 
 import (
-	"github.com/LoCCS/bliss"
 	dcrcrypto "github.com/decred/dcrd/crypto"
+	"github.com/hybridnetwork/bliss"
 )
 
-type PublicKey struct{
+type PublicKey struct {
 	dcrcrypto.PublicKeyAdapter
 	bliss.PublicKey
 }
@@ -14,15 +14,14 @@ func (p PublicKey) GetType() int {
 	return pqcTypeBliss
 }
 
-func (p PublicKey) Serialize() []byte{
+func (p PublicKey) Serialize() []byte {
 	return p.PublicKey.Serialize()
 }
 
-func (p PublicKey) SerializeCompressed() []byte{
+func (p PublicKey) SerializeCompressed() []byte {
 	return p.Serialize()
 }
 
-func (p PublicKey) SerializeUnCompressed() []byte{
+func (p PublicKey) SerializeUnCompressed() []byte {
 	return p.Serialize()
 }
-

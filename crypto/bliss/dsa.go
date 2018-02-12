@@ -2,8 +2,9 @@ package bliss
 
 import (
 	"io"
-	"github.com/LoCCS/bliss/poly"
+
 	dcrcrypto "github.com/decred/dcrd/crypto"
+	"github.com/hybridnetwork/bliss/poly"
 )
 
 type DSA interface {
@@ -52,7 +53,7 @@ type DSA interface {
 	// RecoverCompact recovers a public key from an encoded signature
 	// and message, then verifies the signature against the public
 	// key.
-	RecoverCompact(signature , hash []byte) (dcrcrypto.PublicKey, bool, error)
+	RecoverCompact(signature, hash []byte) (dcrcrypto.PublicKey, bool, error)
 
 	// ----------------------------------------------------------------------------
 	// Bliss

@@ -1,12 +1,13 @@
 package bliss
 
 import (
-	"io"
-	"github.com/LoCCS/bliss/poly"
-	"github.com/LoCCS/bliss/sampler"
-	"github.com/LoCCS/bliss"
-	dcrcrypto "github.com/decred/dcrd/crypto"
 	"crypto/rand"
+	"io"
+
+	dcrcrypto "github.com/decred/dcrd/crypto"
+	"github.com/hybridnetwork/bliss"
+	"github.com/hybridnetwork/bliss/poly"
+	"github.com/hybridnetwork/bliss/sampler"
 )
 
 var pqcTypeBliss = 4
@@ -14,14 +15,14 @@ var pqcTypeBliss = 4
 type blissDSA struct {
 
 	// Private keys
-	newPrivateKey     func(s1, s2, a *poly.PolyArray) dcrcrypto.PrivateKey
-	privKeyFromBytes  func(pk []byte) (dcrcrypto.PrivateKey, dcrcrypto.PublicKey)
-	privKeyBytesLen   func() int
+	newPrivateKey    func(s1, s2, a *poly.PolyArray) dcrcrypto.PrivateKey
+	privKeyFromBytes func(pk []byte) (dcrcrypto.PrivateKey, dcrcrypto.PublicKey)
+	privKeyBytesLen  func() int
 
 	// Public keys
-	newPublicKey               func(a *poly.PolyArray) dcrcrypto.PublicKey
-	parsePubKey                func(pubKeyStr []byte) (dcrcrypto.PublicKey, error)
-	pubKeyBytesLen             func() int
+	newPublicKey   func(a *poly.PolyArray) dcrcrypto.PublicKey
+	parsePubKey    func(pubKeyStr []byte) (dcrcrypto.PublicKey, error)
+	pubKeyBytesLen func() int
 
 	// Signatures
 	newSignature      func(z1, z2 *poly.PolyArray, c []uint32) dcrcrypto.Signature
@@ -89,30 +90,29 @@ func (sp blissDSA) Verify(pub dcrcrypto.PublicKey, hash []byte, sig dcrcrypto.Si
 	return sp.verify(pub, hash, sig)
 }
 
-
 func newBlissDSA() DSA {
 	var bliss DSA = &blissDSA{
 
 		// Private keys
 		newPrivateKey: func(s1, s2, a *poly.PolyArray) dcrcrypto.PrivateKey {
-			if s1 == nil || s2 == nil || a == nil{
+			if s1 == nil || s2 == nil || a == nil {
 				return nil
 			}
 
 			n := s1.Param().N
 			s1data := s1.GetData()
 			s2data := s2.GetData()
-			ret := make([]byte, n * 2 + 1)
+			ret := make([]byte, n*2+1)
 			ret[0] = byte(s1.Param().Version)
-			s1part := ret[1 : 1 + n]
-			s2part := ret[1 + n :]
+			s1part := ret[1 : 1+n]
+			s2part := ret[1+n:]
 			for i := 0; i < int(n); i++ {
 				s1part[i] = byte(s1data[i] + 4)
 				s2part[i] = byte(s2data[i] + 4)
 			}
 
 			blissPK, err := bliss.DecodePrivateKey(ret)
-			if err != nil{
+			if err != nil {
 				return nil
 			}
 
@@ -122,7 +122,7 @@ func newBlissDSA() DSA {
 		},
 		privKeyFromBytes: func(pk []byte) (dcrcrypto.PrivateKey, dcrcrypto.PublicKey) {
 			blissPK, err := bliss.DeserializePrivateKey(pk)
-			if err != nil{
+			if err != nil {
 				return nil, nil
 			}
 			var privateKey PrivateKey
@@ -138,20 +138,20 @@ func newBlissDSA() DSA {
 
 		// Public keys
 		newPublicKey: func(a *poly.PolyArray) dcrcrypto.PublicKey {
-			if a == nil{
+			if a == nil {
 				return nil
 			}
 
 			n := a.Param().N
 			data := a.GetData()
-			ret := make([]byte, n * 2 + 1)
+			ret := make([]byte, n*2+1)
 			ret[0] = byte(a.Param().Version)
 			for i := 0; i < int(n); i++ {
-				ret[i * 2 + 1] = byte(uint16(data[i]) >> 8)
-				ret[i * 2 + 2] = byte(uint16(data[i]) & 0xff)
+				ret[i*2+1] = byte(uint16(data[i]) >> 8)
+				ret[i*2+2] = byte(uint16(data[i]) & 0xff)
 			}
 			blissPK, err := bliss.DecodePublicKey(ret)
-			if err != nil{
+			if err != nil {
 				return nil
 			}
 			return &PublicKey{
@@ -160,7 +160,7 @@ func newBlissDSA() DSA {
 		},
 		parsePubKey: func(pubKeyStr []byte) (dcrcrypto.PublicKey, error) {
 			blissPK, err := bliss.DeserializePublicKey(pubKeyStr)
-			if err != nil{
+			if err != nil {
 				return nil, err
 			}
 			return &PublicKey{
@@ -174,13 +174,13 @@ func newBlissDSA() DSA {
 
 		// Signatures
 		newSignature: func(z1, z2 *poly.PolyArray, c []uint32) dcrcrypto.Signature {
-			if z1 == nil || z2 == nil || c == nil{
+			if z1 == nil || z2 == nil || c == nil {
 				return nil
 			}
 			n := z1.Param().N
 			kappa := z1.Param().Kappa
 			z1len := n * 2
-			z2len := n + n / 8
+			z2len := n + n/8
 			clen := 2 * kappa
 
 			z1data := z1.GetData()
@@ -190,9 +190,9 @@ func newBlissDSA() DSA {
 			ret := make([]byte, 1+z1len+z2len+clen)
 			ret[0] = byte(z1.Param().Version)
 
-			z1part := ret[1 : 1 + z1len]
-			z2part := ret[1 + z1len : 1 + z1len + z2len]
-			cpart := ret[1 + z1len + z2len :]
+			z1part := ret[1 : 1+z1len]
+			z2part := ret[1+z1len : 1+z1len+z2len]
+			cpart := ret[1+z1len+z2len:]
 
 			// It is easy to store z1. Take each element as
 			// an uint16, although they are actually a littble
@@ -225,12 +225,12 @@ func newBlissDSA() DSA {
 			// c is represented by a list of kappa integers in [0,n)
 			// For simplicity, we use 2 bytes to store each index.
 			for i := 0; i < int(kappa); i++ {
-				cpart[i * 2] = byte(uint16(cdata[i]) >> 8)
-				cpart[i * 2 + 1] = byte(uint16(cdata[i]) & 0xff)
+				cpart[i*2] = byte(uint16(cdata[i]) >> 8)
+				cpart[i*2+1] = byte(uint16(cdata[i]) & 0xff)
 			}
 
 			sig, err := bliss.DecodeSignature(ret)
-			if err != nil{
+			if err != nil {
 				return nil
 			}
 			return &Signature{
@@ -240,7 +240,7 @@ func newBlissDSA() DSA {
 		},
 		parseDERSignature: func(sigStr []byte) (dcrcrypto.Signature, error) {
 			sig, err := bliss.DeserializeBlissSignature(sigStr)
-			if err != nil{
+			if err != nil {
 				return nil, err
 			}
 
@@ -250,7 +250,7 @@ func newBlissDSA() DSA {
 		},
 		parseSignature: func(sigStr []byte) (dcrcrypto.Signature, error) {
 			sig, err := bliss.DeserializeBlissSignature(sigStr)
-			if err != nil{
+			if err != nil {
 				return nil, err
 			}
 
@@ -266,11 +266,11 @@ func newBlissDSA() DSA {
 			seed := make([]byte, sampler.SHA_512_DIGEST_LENGTH)
 			rand.Read(seed)
 			entropy, err := sampler.NewEntropy(seed)
-			if err != nil{
+			if err != nil {
 				return nil, nil, err
 			}
 			blissPK, err := bliss.GeneratePrivateKey(BlissVersion, entropy)
-			if err != nil{
+			if err != nil {
 				return nil, nil, err
 			}
 			privateKey := &PrivateKey{
@@ -286,12 +286,12 @@ func newBlissDSA() DSA {
 			seed := make([]byte, sampler.SHA_512_DIGEST_LENGTH)
 			rand.Read(seed)
 			entropy, err := sampler.NewEntropy(seed)
-			if err != nil{
+			if err != nil {
 				return nil, err
 			}
 			priv1 := priv.(PrivateKey)
 			sig, err := priv1.Sign(hash, entropy)
-			if err != nil{
+			if err != nil {
 				return nil, err
 			}
 			return &Signature{

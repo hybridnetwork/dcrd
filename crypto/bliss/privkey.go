@@ -1,18 +1,17 @@
 package bliss
 
 import (
-	"github.com/LoCCS/bliss"
 	dcrcrypto "github.com/decred/dcrd/crypto"
+	"github.com/hybridnetwork/bliss"
 )
 
-type PrivateKey struct{
+type PrivateKey struct {
 	dcrcrypto.PrivateKeyAdapter
 	bliss.PrivateKey
 }
 
-
 // Public returns the PublicKey corresponding to this private key.
-func (p PrivateKey) PublicKey() (dcrcrypto.PublicKey) {
+func (p PrivateKey) PublicKey() dcrcrypto.PublicKey {
 	blissPkp := p.PrivateKey.PublicKey()
 	pk := &PublicKey{
 		PublicKey: *blissPkp,
@@ -25,6 +24,6 @@ func (p PrivateKey) GetType() int {
 	return pqcTypeBliss
 }
 
-func (p PrivateKey) Serialize() []byte{
+func (p PrivateKey) Serialize() []byte {
 	return p.PrivateKey.Serialize()
 }
