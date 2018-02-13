@@ -11,7 +11,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/decred/dcrd/wire"
+	"github.com/hybridnetwork/hxd/wire"
 )
 
 // mruInventoryMap provides a concurrency safe map that is limited to a maximum

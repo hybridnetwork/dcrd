@@ -12,7 +12,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/decred/dcrd/dcrjson"
+	"github.com/hybridnetwork/hxd/dcrjson"
 )
 
 // TestChainSvrWsNtfns tests all of the chain server websocket-specific

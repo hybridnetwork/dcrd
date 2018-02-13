@@ -20,10 +20,10 @@ import (
 
 	"github.com/btcsuite/go-socks/socks"
 	"github.com/davecgh/go-spew/spew"
-	"github.com/decred/dcrd/blockchain"
-	"github.com/decred/dcrd/chaincfg"
-	"github.com/decred/dcrd/chaincfg/chainhash"
-	"github.com/decred/dcrd/wire"
+	"github.com/hybridnetwork/hxd/blockchain"
+	"github.com/hybridnetwork/hxd/chaincfg"
+	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
+	"github.com/hybridnetwork/hxd/wire"
 )
 
 const (

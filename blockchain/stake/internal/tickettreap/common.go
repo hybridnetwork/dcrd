@@ -10,7 +10,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/decred/dcrd/chaincfg/chainhash"
+	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
 )
 
 const (

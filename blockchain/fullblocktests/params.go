@@ -10,9 +10,9 @@ import (
 	"math/big"
 	"time"
 
-	"github.com/decred/dcrd/chaincfg"
-	"github.com/decred/dcrd/chaincfg/chainhash"
-	"github.com/decred/dcrd/wire"
+	"github.com/hybridnetwork/hxd/chaincfg"
+	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
+	"github.com/hybridnetwork/hxd/wire"
 )
 
 // newHashFromStr converts the passed big-endian hex string into a

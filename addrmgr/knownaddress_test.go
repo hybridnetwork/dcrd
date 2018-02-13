@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/decred/dcrd/addrmgr"
-	"github.com/decred/dcrd/wire"
+	"github.com/hybridnetwork/hxd/addrmgr"
+	"github.com/hybridnetwork/hxd/wire"
 )
 
 func TestChance(t *testing.T) {

@@ -8,9 +8,9 @@ package blockchain
 import (
 	"fmt"
 
-	"github.com/decred/dcrd/blockchain/stake"
-	"github.com/decred/dcrd/chaincfg/chainhash"
-	"github.com/decred/dcrd/database"
+	"github.com/hybridnetwork/hxd/blockchain/stake"
+	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
+	"github.com/hybridnetwork/hxd/database"
 )
 
 // nodeAtHeightFromTopNode goes backwards through a node until it a reaches

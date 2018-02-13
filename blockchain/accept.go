@@ -11,10 +11,10 @@ import (
 	"math"
 	"time"
 
-	"github.com/decred/dcrd/blockchain/stake"
-	"github.com/decred/dcrd/chaincfg/chainhash"
-	"github.com/decred/dcrd/txscript"
-	"github.com/decred/dcrutil"
+	"github.com/hybridnetwork/hxd/blockchain/stake"
+	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
+	"github.com/hybridnetwork/hxd/txscript"
+	dcrutil "github.com/hybridnetwork/hxutil"
 )
 
 // checkCoinbaseUniqueHeight checks to ensure that for all blocks height > 1

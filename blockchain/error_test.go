@@ -8,7 +8,7 @@ package blockchain_test
 import (
 	"testing"
 
-	"github.com/decred/dcrd/blockchain"
+	"github.com/hybridnetwork/hxd/blockchain"
 )
 
 // TestErrorCodeStringer tests the stringized output for the ErrorCode type.

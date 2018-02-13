@@ -21,9 +21,9 @@ import (
 
 	"github.com/btcsuite/goleveldb/leveldb"
 	ldberrors "github.com/btcsuite/goleveldb/leveldb/errors"
-	"github.com/decred/dcrd/database"
-	"github.com/decred/dcrd/wire"
-	"github.com/decred/dcrutil"
+	"github.com/hybridnetwork/hxd/database"
+	"github.com/hybridnetwork/hxd/wire"
+	dcrutil "github.com/hybridnetwork/hxutil"
 )
 
 var (

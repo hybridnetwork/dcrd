@@ -10,11 +10,11 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/decred/dcrd/chaincfg"
-	"github.com/decred/dcrd/database"
-	_ "github.com/decred/dcrd/database/ffldb"
-	"github.com/decred/dcrd/wire"
-	"github.com/decred/dcrutil"
+	"github.com/hybridnetwork/hxd/chaincfg"
+	"github.com/hybridnetwork/hxd/database"
+	_ "github.com/hybridnetwork/hxd/database/ffldb"
+	"github.com/hybridnetwork/hxd/wire"
+	dcrutil "github.com/hybridnetwork/hxutil"
 	flags "github.com/jessevdk/go-flags"
 )
 

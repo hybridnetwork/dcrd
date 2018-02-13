@@ -8,8 +8,8 @@ package main
 import (
 	"time"
 
-	"github.com/decred/dcrd/chaincfg/chainhash"
-	"github.com/decred/dcrd/database"
+	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
+	"github.com/hybridnetwork/hxd/database"
 )
 
 // headersCmd defines the configuration options for the loadheaders command.

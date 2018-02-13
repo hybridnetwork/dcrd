@@ -11,10 +11,10 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/decred/dcrd/chaincfg"
-	"github.com/decred/dcrd/chaincfg/chainec"
-	"github.com/decred/dcrd/txscript"
-	"github.com/decred/dcrutil"
+	"github.com/hybridnetwork/hxd/chaincfg"
+	"github.com/hybridnetwork/hxd/chaincfg/chainec"
+	"github.com/hybridnetwork/hxd/txscript"
+	dcrutil "github.com/hybridnetwork/hxutil"
 )
 
 // decodeHex decodes the passed hex string and returns the resulting bytes.  It

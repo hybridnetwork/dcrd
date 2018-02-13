@@ -11,8 +11,8 @@ import (
 	"testing"
 )
 
-//	"github.com/decred/dcrd/blockchain"
-//	"github.com/decred/dcrd/txscript"
+//	"github.com/hybridnetwork/hxd/blockchain"
+//	"github.com/hybridnetwork/hxd/txscript"
 
 // TestCheckBlockScripts ensures that validating the all of the scripts in a
 // known-good block doesn't return an error.

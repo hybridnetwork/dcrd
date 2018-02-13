@@ -10,7 +10,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/decred/dcrd/chaincfg/chainhash"
+	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
 )
 
 // defaultTransactionAlloc is the default size used for the backing array

@@ -9,14 +9,14 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/decred/dcrd/blockchain"
-	"github.com/decred/dcrd/blockchain/internal/progresslog"
-	"github.com/decred/dcrd/blockchain/stake"
-	"github.com/decred/dcrd/chaincfg"
-	"github.com/decred/dcrd/chaincfg/chainhash"
-	"github.com/decred/dcrd/database"
-	"github.com/decred/dcrd/wire"
-	"github.com/decred/dcrutil"
+	"github.com/hybridnetwork/hxd/blockchain"
+	"github.com/hybridnetwork/hxd/blockchain/internal/progresslog"
+	"github.com/hybridnetwork/hxd/blockchain/stake"
+	"github.com/hybridnetwork/hxd/chaincfg"
+	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
+	"github.com/hybridnetwork/hxd/database"
+	"github.com/hybridnetwork/hxd/wire"
+	dcrutil "github.com/hybridnetwork/hxutil"
 )
 
 var (

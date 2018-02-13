@@ -6,8 +6,8 @@
 package main
 
 import (
-	"github.com/decred/dcrd/chaincfg"
-	"github.com/decred/dcrd/wire"
+	"github.com/hybridnetwork/hxd/chaincfg"
+	"github.com/hybridnetwork/hxd/wire"
 )
 
 // activeNetParams is a pointer to the parameters specific to the

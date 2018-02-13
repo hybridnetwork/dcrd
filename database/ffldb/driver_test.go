@@ -13,10 +13,10 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/decred/dcrd/chaincfg"
-	"github.com/decred/dcrd/database"
-	"github.com/decred/dcrd/database/ffldb"
-	"github.com/decred/dcrutil"
+	"github.com/hybridnetwork/hxd/chaincfg"
+	"github.com/hybridnetwork/hxd/database"
+	"github.com/hybridnetwork/hxd/database/ffldb"
+	dcrutil "github.com/hybridnetwork/hxutil"
 )
 
 // dbType is the database type name for this driver.

@@ -8,8 +8,8 @@ package blockchain_test
 import (
 	"testing"
 
-	"github.com/decred/dcrd/blockchain"
-	"github.com/decred/dcrd/chaincfg"
+	"github.com/hybridnetwork/hxd/blockchain"
+	"github.com/hybridnetwork/hxd/chaincfg"
 )
 
 func TestBlockSubsidy(t *testing.T) {

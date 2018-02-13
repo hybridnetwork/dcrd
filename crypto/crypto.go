@@ -3,7 +3,7 @@ package crypto
 import (
 	"math/big"
 	"crypto/ecdsa"
-	"github.com/decred/dcrd/chaincfg/chainec"
+	"github.com/hybridnetwork/hxd/chaincfg/chainec"
 )
 
 type PrivateKey interface{

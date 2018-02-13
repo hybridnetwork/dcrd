@@ -5,3 +5,4 @@ cmd/promptsecret/promptsecret
 *.pyc
 vendor/
 .DS_Store
+glide.lock

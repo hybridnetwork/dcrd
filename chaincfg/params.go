@@ -13,8 +13,8 @@ import (
 	"math/big"
 	"time"
 
-	"github.com/decred/dcrd/chaincfg/chainhash"
-	"github.com/decred/dcrd/wire"
+	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
+	"github.com/hybridnetwork/hxd/wire"
 )
 
 // These variables are the chain proof-of-work limit parameters for each default

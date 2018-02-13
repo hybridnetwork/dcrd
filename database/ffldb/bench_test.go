@@ -10,9 +10,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/decred/dcrd/chaincfg"
-	"github.com/decred/dcrd/database"
-	"github.com/decred/dcrutil"
+	"github.com/hybridnetwork/hxd/chaincfg"
+	"github.com/hybridnetwork/hxd/database"
+	dcrutil "github.com/hybridnetwork/hxutil"
 )
 
 // BenchmarkBlockHeader benchmarks how long it takes to load the mainnet genesis

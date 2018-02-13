@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/decred/dcrd/chaincfg"
+	"github.com/hybridnetwork/hxd/chaincfg"
 )
 
 var (

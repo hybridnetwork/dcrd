@@ -12,12 +12,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/decred/dcrd/blockchain"
-	"github.com/decred/dcrd/chaincfg"
-	"github.com/decred/dcrd/chaincfg/chainhash"
-	"github.com/decred/dcrd/mining"
-	"github.com/decred/dcrd/wire"
-	"github.com/decred/dcrutil"
+	"github.com/hybridnetwork/hxd/blockchain"
+	"github.com/hybridnetwork/hxd/chaincfg"
+	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
+	"github.com/hybridnetwork/hxd/mining"
+	"github.com/hybridnetwork/hxd/wire"
+	dcrutil "github.com/hybridnetwork/hxutil"
 )
 
 const (

@@ -9,9 +9,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/decred/dcrd/chaincfg/chainhash"
-	"github.com/decred/dcrd/database"
-	"github.com/decred/dcrutil"
+	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
+	"github.com/hybridnetwork/hxd/database"
+	dcrutil "github.com/hybridnetwork/hxutil"
 )
 
 // BehaviorFlags is a bitmask defining tweaks to the normal behavior when

@@ -22,12 +22,12 @@ import (
 
 	"github.com/btcsuite/btclog"
 	"github.com/btcsuite/go-socks/socks"
-	"github.com/decred/dcrd/connmgr"
-	"github.com/decred/dcrd/database"
-	_ "github.com/decred/dcrd/database/ffldb"
-	"github.com/decred/dcrd/mempool"
-	"github.com/decred/dcrd/sampleconfig"
-	"github.com/decred/dcrutil"
+	"github.com/hybridnetwork/hxd/connmgr"
+	"github.com/hybridnetwork/hxd/database"
+	_ "github.com/hybridnetwork/hxd/database/ffldb"
+	"github.com/hybridnetwork/hxd/mempool"
+	"github.com/hybridnetwork/hxd/sampleconfig"
+	dcrutil "github.com/hybridnetwork/hxutil"
 	flags "github.com/jessevdk/go-flags"
 )
 

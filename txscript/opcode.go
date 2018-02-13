@@ -16,11 +16,11 @@ import (
 
 	"golang.org/x/crypto/ripemd160"
 
-	"github.com/decred/dcrd/chaincfg"
-	"github.com/decred/dcrd/chaincfg/chainec"
-	"github.com/decred/dcrd/chaincfg/chainhash"
-	bs "github.com/decred/dcrd/crypto/bliss"
-	"github.com/decred/dcrd/wire"
+	"github.com/hybridnetwork/hxd/chaincfg"
+	"github.com/hybridnetwork/hxd/chaincfg/chainec"
+	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
+	bs "github.com/hybridnetwork/hxd/crypto/bliss"
+	"github.com/hybridnetwork/hxd/wire"
 )
 
 var optimizeSigVerification = chaincfg.SigHashOptimization

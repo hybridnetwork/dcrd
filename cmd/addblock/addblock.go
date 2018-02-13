@@ -11,10 +11,10 @@ import (
 	"runtime"
 
 	"github.com/btcsuite/btclog"
-	"github.com/decred/dcrd/blockchain"
-	"github.com/decred/dcrd/blockchain/indexers"
-	"github.com/decred/dcrd/database"
-	"github.com/decred/dcrd/limits"
+	"github.com/hybridnetwork/hxd/blockchain"
+	"github.com/hybridnetwork/hxd/blockchain/indexers"
+	"github.com/hybridnetwork/hxd/database"
+	"github.com/hybridnetwork/hxd/limits"
 )
 
 const (

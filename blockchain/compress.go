@@ -7,10 +7,10 @@ package blockchain
 import (
 	"fmt"
 
-	"github.com/decred/dcrd/blockchain/stake"
-	"github.com/decred/dcrd/chaincfg/chainec"
-	"github.com/decred/dcrd/crypto/bliss"
-	"github.com/decred/dcrd/txscript"
+	"github.com/hybridnetwork/hxd/blockchain/stake"
+	"github.com/hybridnetwork/hxd/chaincfg/chainec"
+	"github.com/hybridnetwork/hxd/crypto/bliss"
+	"github.com/hybridnetwork/hxd/txscript"
 )
 
 // currentCompressionVersion is the current script compression version of the

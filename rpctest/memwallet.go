@@ -11,15 +11,15 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/decred/dcrd/blockchain"
-	"github.com/decred/dcrd/chaincfg"
-	"github.com/decred/dcrd/chaincfg/chainec"
-	"github.com/decred/dcrd/chaincfg/chainhash"
-	"github.com/decred/dcrd/txscript"
-	"github.com/decred/dcrd/wire"
-	"github.com/decred/dcrrpcclient"
-	"github.com/decred/dcrutil"
-	"github.com/decred/dcrutil/hdkeychain"
+	"github.com/hybridnetwork/hxd/blockchain"
+	"github.com/hybridnetwork/hxd/chaincfg"
+	"github.com/hybridnetwork/hxd/chaincfg/chainec"
+	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
+	"github.com/hybridnetwork/hxd/txscript"
+	"github.com/hybridnetwork/hxd/wire"
+	dcrrpcclient "github.com/hybridnetwork/hxrpcclient"
+	dcrutil "github.com/hybridnetwork/hxutil"
+	"github.com/hybridnetwork/hxutil/hdkeychain"
 )
 
 var (

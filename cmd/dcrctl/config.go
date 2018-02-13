@@ -14,8 +14,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/decred/dcrd/dcrjson"
-	"github.com/decred/dcrutil"
+	"github.com/hybridnetwork/hxd/dcrjson"
+	dcrutil "github.com/hybridnetwork/hxutil"
 
 	flags "github.com/jessevdk/go-flags"
 )

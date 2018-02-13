@@ -11,9 +11,9 @@ package indexers
 import (
 	"encoding/binary"
 
-	"github.com/decred/dcrd/blockchain"
-	"github.com/decred/dcrd/database"
-	"github.com/decred/dcrutil"
+	"github.com/hybridnetwork/hxd/blockchain"
+	"github.com/hybridnetwork/hxd/database"
+	dcrutil "github.com/hybridnetwork/hxutil"
 )
 
 var (

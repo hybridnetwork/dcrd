@@ -10,8 +10,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/decred/dcrd/chaincfg/chainhash"
-	"github.com/decred/dcrd/wire"
+	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
+	"github.com/hybridnetwork/hxd/wire"
 )
 
 // TestMruInventoryMap ensures the MruInventoryMap behaves as expected including

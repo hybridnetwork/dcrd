@@ -4,7 +4,7 @@ import (
 	"crypto/rand"
 	"io"
 
-	dcrcrypto "github.com/decred/dcrd/crypto"
+	dcrcrypto "github.com/hybridnetwork/hxd/crypto"
 	"github.com/hybridnetwork/bliss"
 	"github.com/hybridnetwork/bliss/poly"
 	"github.com/hybridnetwork/bliss/sampler"

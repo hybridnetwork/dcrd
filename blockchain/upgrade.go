@@ -6,10 +6,10 @@
 package blockchain
 
 import (
-	"github.com/decred/dcrd/blockchain/internal/progresslog"
-	"github.com/decred/dcrd/blockchain/stake"
-	"github.com/decred/dcrd/chaincfg/chainhash"
-	"github.com/decred/dcrd/database"
+	"github.com/hybridnetwork/hxd/blockchain/internal/progresslog"
+	"github.com/hybridnetwork/hxd/blockchain/stake"
+	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
+	"github.com/hybridnetwork/hxd/database"
 )
 
 // upgradeToVersion2 upgrades a version 1 blockchain to version 2, allowing

@@ -11,7 +11,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/decred/dcrd/dcrjson"
+	"github.com/hybridnetwork/hxd/dcrjson"
 )
 
 // helpDescsEnUS defines the English descriptions used for the help strings.

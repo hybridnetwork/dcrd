@@ -8,7 +8,7 @@ package addrmgr
 import (
 	"time"
 
-	"github.com/decred/dcrd/wire"
+	"github.com/hybridnetwork/hxd/wire"
 )
 
 // KnownAddress tracks information about a known network address that is used

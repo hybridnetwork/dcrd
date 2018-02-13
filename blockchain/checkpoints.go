@@ -8,11 +8,11 @@ package blockchain
 import (
 	"fmt"
 
-	"github.com/decred/dcrd/chaincfg"
-	"github.com/decred/dcrd/chaincfg/chainhash"
-	"github.com/decred/dcrd/database"
-	"github.com/decred/dcrd/txscript"
-	"github.com/decred/dcrutil"
+	"github.com/hybridnetwork/hxd/chaincfg"
+	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
+	"github.com/hybridnetwork/hxd/database"
+	"github.com/hybridnetwork/hxd/txscript"
+	dcrutil "github.com/hybridnetwork/hxutil"
 )
 
 // CheckpointConfirmations is the number of blocks before the end of the current

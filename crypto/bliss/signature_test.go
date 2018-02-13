@@ -2,12 +2,12 @@ package bliss
 
 import (
 	"testing"
-	_ "github.com/decred/dcrd/chaincfg/chainec"
-	_ "github.com/decred/dcrd/crypto"
+	_ "github.com/hybridnetwork/hxd/chaincfg/chainec"
+	_ "github.com/hybridnetwork/hxd/crypto"
 	"crypto/rand"
 	"bytes"
 	"golang.org/x/crypto/sha3"
-	"github.com/decred/dcrd/chaincfg/chainec"
+	"github.com/hybridnetwork/hxd/chaincfg/chainec"
 )
 
 func TestSignature(t *testing.T) {

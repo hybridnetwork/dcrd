@@ -9,11 +9,11 @@ import (
 	"encoding/binary"
 	"fmt"
 
-	"github.com/decred/dcrd/chaincfg"
-	"github.com/decred/dcrd/chaincfg/chainec"
-	"github.com/decred/dcrd/chaincfg/chainhash"
-	"github.com/decred/dcrutil"
-	bs "github.com/decred/dcrd/crypto/bliss"
+	"github.com/hybridnetwork/hxd/chaincfg"
+	"github.com/hybridnetwork/hxd/chaincfg/chainec"
+	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
+	dcrutil "github.com/hybridnetwork/hxutil"
+	bs "github.com/hybridnetwork/hxd/crypto/bliss"
 )
 
 const (

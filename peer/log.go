@@ -11,9 +11,9 @@ import (
 	"time"
 
 	"github.com/btcsuite/btclog"
-	"github.com/decred/dcrd/chaincfg/chainhash"
-	"github.com/decred/dcrd/txscript"
-	"github.com/decred/dcrd/wire"
+	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
+	"github.com/hybridnetwork/hxd/txscript"
+	"github.com/hybridnetwork/hxd/wire"
 )
 
 const (

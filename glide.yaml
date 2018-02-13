@@ -1,4 +1,4 @@
-package: github.com/decred/dcrd
+package: github.com/hybridnetwork/hxd
 import:
 - package: github.com/agl/ed25519
   subpackages:
@@ -28,13 +28,11 @@ import:
   subpackages:
   - spew
 - package: github.com/dchest/blake256
-- package: github.com/decred/bitset
-- package: github.com/decred/dcrrpcclient
-  repo: git@github.com:hybridnetwork/hxrpcclient
-  version: bogrod-pqdev
-- package: github.com/decred/dcrutil
-  repo: git@github.com:hybridnetwork/hxutil
-  version: bogrod-pqdev
+- package: github.com/hybridnetwork/bitset
+- package: github.com/hybridnetwork/hxrpcclient
+  version: dev-v0.0.1
+- package: github.com/hybridnetwork/hxutil
+  version: dev-v0.0.1
   subpackages:
   - bloom
   - hdkeychain

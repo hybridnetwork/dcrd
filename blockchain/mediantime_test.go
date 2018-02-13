@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/decred/dcrd/blockchain"
+	"github.com/hybridnetwork/hxd/blockchain"
 )
 
 // TestMedianTime tests the medianTime implementation.

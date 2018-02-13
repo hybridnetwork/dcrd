@@ -9,7 +9,7 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/decred/dcrd/txscript"
+	"github.com/hybridnetwork/hxd/txscript"
 )
 
 // TestScriptBuilderAddOp tests that pushing opcodes to a script via the

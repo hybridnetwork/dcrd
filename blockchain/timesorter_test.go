@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/decred/dcrd/blockchain"
+	"github.com/hybridnetwork/hxd/blockchain"
 )
 
 // TestTimeSorter tests the timeSorter implementation.

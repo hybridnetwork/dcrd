@@ -1,7 +1,7 @@
 package crypto
 import (
 	"fmt"
-	_"github.com/decred/dcrd/chaincfg/chainec"
+	_"github.com/hybridnetwork/hxd/chaincfg/chainec"
 	"testing"
 )
 
