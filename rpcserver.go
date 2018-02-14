@@ -32,8 +32,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/HcashOrg/hcashd/hcashjson"
 	"github.com/btcsuite/websocket"
+	"github.com/hybridnetwork/hxd/dcrjson"
 
 	"github.com/hybridnetwork/bitset"
 	"github.com/hybridnetwork/hxd/blockchain"
@@ -5774,7 +5774,7 @@ func handleVerifyMessage(s *rpcServer, cmd interface{}, closeChan <-chan struct{
 // handleVerifyBlissMessage implements the verifyblissmessage command.
 func handleVerifyBlissMessage(s *rpcServer, cmd interface{}, closeChan <-chan struct{}) (interface{}, error) {
 
-	icmd := cmd.(*hcashjson.VerifyBlissMessageCmd)
+	icmd := cmd.(*dcrjson.VerifyBlissMessageCmd)
 	var valid bool
 
 	pubkey, err := hex.DecodeString(icmd.PubKey)
@@ -5787,7 +5787,7 @@ func handleVerifyBlissMessage(s *rpcServer, cmd interface{}, closeChan <-chan st
 	}
 
 	var buf bytes.Buffer
-	wire.WriteVarString(&buf, 0, "Hypercash Signed Message:\n")
+	wire.WriteVarString(&buf, 0, "Hx Signed Message:\n")
 	wire.WriteVarString(&buf, 0, icmd.Message)
 	messageHash := chainhash.HashB(buf.Bytes())
 
