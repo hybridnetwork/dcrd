@@ -10,6 +10,3 @@ env:
   - GOVERSION = 1.9
 
 install: true
-
-script:
-  - ./run_tests.sh $GOVERSION
