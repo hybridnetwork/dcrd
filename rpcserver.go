@@ -32,6 +32,7 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/HcashOrg/hcashd/hcashjson"
 	"github.com/btcsuite/websocket"
 
 	"github.com/hybridnetwork/bitset"
@@ -40,6 +41,7 @@ import (
 	"github.com/hybridnetwork/hxd/chaincfg"
 	"github.com/hybridnetwork/hxd/chaincfg/chainec"
 	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
+	"github.com/hybridnetwork/hxd/crypto/bliss"
 	"github.com/hybridnetwork/hxd/database"
 	"github.com/hybridnetwork/hxd/dcrjson"
 	"github.com/hybridnetwork/hxd/mempool"
@@ -242,6 +244,7 @@ var rpcHandlersBeforeInit = map[string]commandHandler{
 	"validateaddress":       handleValidateAddress,
 	"verifychain":           handleVerifyChain,
 	"verifymessage":         handleVerifyMessage,
+	"verifyblissmessage":    handleVerifyBlissMessage,
 	"version":               handleVersion,
 }
 
@@ -340,6 +343,7 @@ var rpcLimited = map[string]struct{}{
 	"submitblock":           {},
 	"validateaddress":       {},
 	"verifymessage":         {},
+	"verifyblissmessage":    {},
 	"version":               {},
 }
 
@@ -5765,6 +5769,39 @@ func handleVerifyMessage(s *rpcServer, cmd interface{}, closeChan <-chan struct{
 
 	// Return boolean if addresses match.
 	return address.EncodeAddress() == c.Address, nil
+}
+
+// handleVerifyBlissMessage implements the verifyblissmessage command.
+func handleVerifyBlissMessage(s *rpcServer, cmd interface{}, closeChan <-chan struct{}) (interface{}, error) {
+
+	icmd := cmd.(*hcashjson.VerifyBlissMessageCmd)
+	var valid bool
+
+	pubkey, err := hex.DecodeString(icmd.PubKey)
+	if err != nil {
+		return nil, err
+	}
+	key, err := bliss.Bliss.ParsePubKey(pubkey)
+	if err != nil {
+		return nil, err
+	}
+
+	var buf bytes.Buffer
+	wire.WriteVarString(&buf, 0, "Hypercash Signed Message:\n")
+	wire.WriteVarString(&buf, 0, icmd.Message)
+	messageHash := chainhash.HashB(buf.Bytes())
+
+	sig, err := base64.StdEncoding.DecodeString(icmd.Signature)
+	if err != nil {
+		return nil, err
+	}
+
+	valid, err = bliss.VerifyCompact(key, messageHash, sig)
+	if err != nil {
+		return nil, err
+	}
+
+	return valid, nil
 }
 
 // handleVersion implements the version command.

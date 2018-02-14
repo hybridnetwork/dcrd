@@ -717,6 +717,23 @@ func NewVerifyMessageCmd(address, signature, message string) *VerifyMessageCmd {
 	}
 }
 
+// VerifyBlissMessageCmd defines the verifyblissmessage JSON-RPC command.
+type VerifyBlissMessageCmd struct {
+	PubKey    string
+	Signature string
+	Message   string
+}
+
+// NewVerifyBlissMessageCmd returns a new instance which can be used to issue a
+// verifyblissmessage JSON-RPC command.
+func NewVerifyBlissMessageCmd(pubkey, signature, message string) *VerifyBlissMessageCmd {
+	return &VerifyBlissMessageCmd{
+		PubKey:    pubkey,
+		Signature: signature,
+		Message:   message,
+	}
+}
+
 func init() {
 	// No special flags for commands in this file.
 	flags := UsageFlag(0)
@@ -763,4 +780,5 @@ func init() {
 	MustRegisterCmd("validateaddress", (*ValidateAddressCmd)(nil), flags)
 	MustRegisterCmd("verifychain", (*VerifyChainCmd)(nil), flags)
 	MustRegisterCmd("verifymessage", (*VerifyMessageCmd)(nil), flags)
+	MustRegisterCmd("verifyblissmessage", (*VerifyBlissMessageCmd)(nil), flags)
 }
