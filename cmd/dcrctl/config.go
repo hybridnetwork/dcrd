@@ -28,9 +28,9 @@ const (
 )
 
 var (
-	dcrdHomeDir            = dcrutil.AppDataDir("dcrd", false)
-	dcrctlHomeDir          = dcrutil.AppDataDir("dcrctl", false)
-	dcrwalletHomeDir       = dcrutil.AppDataDir("dcrwallet", false)
+	dcrdHomeDir            = dcrutil.AppDataDir("hxd", false)
+	dcrctlHomeDir          = dcrutil.AppDataDir("hxctl", false)
+	dcrwalletHomeDir       = dcrutil.AppDataDir("hxwallet", false)
 	defaultConfigFile      = filepath.Join(dcrctlHomeDir, "dcrctl.conf")
 	defaultRPCServer       = "localhost"
 	defaultWalletRPCServer = "localhost"

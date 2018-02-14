@@ -17,7 +17,7 @@ import (
 )
 
 var (
-	dcrdHomeDir        = dcrutil.AppDataDir("dcrd", false)
+	dcrdHomeDir        = dcrutil.AppDataDir("hxd", false)
 	appHomeDir         = dcrutil.AppDataDir("checkdevpremine", false)
 	defaultConfigFile  = filepath.Join(appHomeDir, "checkdevpremine.conf")
 	defaultRPCServer   = "localhost"
