@@ -21,7 +21,7 @@ func (s Signature) Serialize() []byte {
 	return s.Signature.Serialize()
 }
 
-func SignCompact(key hcashcrypto.PrivateKey, hash []byte) ([]byte, error) {
+func SignCompact(key hxcrypto.PrivateKey, hash []byte) ([]byte, error) {
 
 	seed := make([]byte, sampler.SHA_512_DIGEST_LENGTH)
 	rand.Read(seed)
@@ -45,7 +45,7 @@ func SignCompact(key hcashcrypto.PrivateKey, hash []byte) ([]byte, error) {
 	return result, err
 }
 
-func VerifyCompact(key hcashcrypto.PublicKey, messageHash, sign []byte) (bool, error) {
+func VerifyCompact(key hxcrypto.PublicKey, messageHash, sign []byte) (bool, error) {
 
 	sig, _ := bliss.DeserializeBlissSignature(sign)
 	result, err := key.(*PublicKey).Verify(messageHash, sig)
