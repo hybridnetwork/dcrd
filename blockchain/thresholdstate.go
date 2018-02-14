@@ -10,7 +10,6 @@ import (
 
 	"github.com/hybridnetwork/hxd/chaincfg"
 	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
-	"github.com/hybridnetwork/hxd/wire"
 )
 
 // ThresholdState define the various threshold states used when voting on
@@ -528,25 +527,10 @@ func (b *BlockChain) ThresholdState(hash *chainhash.Hash, version uint32, deploy
 // AFTER the passed node.
 //
 // This function MUST be called with the chain state lock held (for writes).
+// The above is not required since LN features are activated before Hx launch
+// Returns true since there is not a case where LN features should not be activated
 func (b *BlockChain) isLNFeaturesAgendaActive(prevNode *blockNode) (bool, error) {
-	// Determine the version for the LN features agenda as defined in
-	// DCP0002 and DCP0003 for the provided network.
-	deploymentVer := uint32(5)
-	if b.chainParams.Net != wire.MainNet {
-		deploymentVer = 6
-	}
-
-	state, err := b.deploymentState(prevNode, deploymentVer,
-		chaincfg.VoteIDLNFeatures)
-	if err != nil {
-		return false, err
-	}
-
-	// NOTE: The choice field of the return threshold state is not examined
-	// here because there is only one possible choice that can be active for
-	// the agenda, which is yes, so there is no need to check it.
-	return state.State == ThresholdActive, nil
-
+	return true, nil
 }
 
 // IsLNFeaturesAgendaActive returns whether or not the LN features agenda vote,

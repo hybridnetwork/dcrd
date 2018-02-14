@@ -804,8 +804,8 @@ var TestNet2Params = Params{
 	StakeMajorityDivisor:    4,
 
 	// Decred organization related parameters.
-	// Organization address is TccTkqj8wFqrUemmHMRSx8SYEueQYLmuuFk
-	OrganizationPkScript:        hexDecode("4fa6cbd0dbe5ec407fe4c8ad374e667771fa0d44"),
+	// Organization address is Tb8e1PwHAVTURn6HYQVYt3C4RmD4G4Byyhm
+	OrganizationPkScript:        hexDecode("76a91488da32f8cfaed3c1a703626f58e002c0e116c8f38854be"),
 	OrganizationPkScriptVersion: 0,
 	BlockOneLedger:              BlockOneLedgerTestNet2,
 }
