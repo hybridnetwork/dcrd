@@ -33,7 +33,6 @@ import (
 	"time"
 
 	"github.com/btcsuite/websocket"
-	"github.com/hybridnetwork/hxd/dcrjson"
 
 	"github.com/hybridnetwork/bitset"
 	"github.com/hybridnetwork/hxd/blockchain"
