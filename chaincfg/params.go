@@ -654,7 +654,13 @@ var TestNet2Params = Params{
 	Name:        "testnet2",
 	Net:         wire.TestNet2,
 	DefaultPort: "12008",
-	DNSSeeds:    []string{},
+	DNSSeeds: []string{
+		"testnet1-rc1.nucleustech.io",
+		"testnet2-rc1.nucleustech.io",
+		"testnet3-rc1.nucleustech.io",
+		"testnet4-rc1.nucleustech.io",
+		"testnet5-rc1.nucleustech.io",
+	},
 
 	// Chain parameters
 	GenesisBlock:             &testNet2GenesisBlock,
