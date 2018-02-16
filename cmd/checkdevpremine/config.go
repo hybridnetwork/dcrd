@@ -24,7 +24,7 @@ var (
 	defaultRPCCertFile = filepath.Join(dcrdHomeDir, "rpc.cert")
 )
 
-// config defines the configuration options for dcrctl.
+// config defines the configuration options for hxctl.
 //
 // See loadConfig for details on the configuration load process.
 type config struct {

@@ -31,7 +31,7 @@ var (
 	dcrdHomeDir            = dcrutil.AppDataDir("hxd", false)
 	dcrctlHomeDir          = dcrutil.AppDataDir("hxctl", false)
 	dcrwalletHomeDir       = dcrutil.AppDataDir("hxwallet", false)
-	defaultConfigFile      = filepath.Join(dcrctlHomeDir, "dcrctl.conf")
+	defaultConfigFile      = filepath.Join(dcrctlHomeDir, "hxctl.conf")
 	defaultRPCServer       = "localhost"
 	defaultWalletRPCServer = "localhost"
 	defaultRPCCertFile     = filepath.Join(dcrdHomeDir, "rpc.cert")
@@ -91,7 +91,7 @@ func listCommands() {
 	}
 }
 
-// config defines the configuration options for dcrctl.
+// config defines the configuration options for hxctl.
 //
 // See loadConfig for details on the configuration load process.
 type config struct {
