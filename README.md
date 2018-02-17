@@ -1,7 +1,6 @@
 hxd
 ====
 
-[![Build Status](https://travis-ci.org/hybridnetwork/hxd.png?branch=dev-v0.0.1)](https://travis-ci.org/hybridnetwork/hxd)
 [![ISC License](http://img.shields.io/badge/license-ISC-blue.svg)](http://copyfree.org)
 
 hxd is a Hx full node implementation written in Go (golang).
@@ -13,9 +12,10 @@ hxd maintains the entire past transactional ledger of Hx and allows
 Note: To send or receive funds and join Proof-of-Stake mining, you will also need
 [hxwallet](https://github.com/hybridnetwork/hxwallet).
 
-This project is currently under active development and is in a Beta state.
-
 Hx is forked from [decred](https://github.com/decred/dcrd) and [btcd](https://github.com/btcsuite/btcd) which are full node implementations written in Go. Both projects are ongoing and under active development. Since hxd is synced and will merge with upstream commits from dcrd and btcd, it will get the benefit of both dcrd and btcd's ongoing upgrades to staking, voting, peer and connection handling, database optimization and other blockchain related technology improvements. Advances made by hxd can also be pulled back upstream to dcrd and btcd including quantum resistant signature schemes and more.
+
+## Current State
+This project is currently under active development and is in a Beta state. The default branch of hxd is currently testnet1. Please make sure to use --testnet flag when running hxd and report any issues by using the integrated issue tracker. Do not yet use this software yet as a store of value!
 
 ## Requirements
 
@@ -28,15 +28,11 @@ Hx is forked from [decred](https://github.com/decred/dcrd) and [btcd](https://gi
   add the bin directory to your system path during Go installation, we
   recommend you do so now.
 
-## Updating
+## Installing
 
-#### Windows
+#### Build from Source
 
-Install a newer MSI
-
-#### Linux/BSD/MacOSX/POSIX - Build from Source
-
-- **Glide**
+- **Dependencies**
 
   Glide is used to manage project dependencies and provide reproducible builds.
   To install:
@@ -71,18 +67,26 @@ glide install
 go install $(glide nv)
 ```
 
-## Docker
+## Running
 
-All tests and linters may be run in a docker container using the script `run_tests.sh`.  This script defaults to using the current supported version of go.  You can run it with the major version of go you would like to use as the only argument to test a previous on a previous version of go (generally Hx supports the current version of go and the previous one).
-
-```
-./run_tests.sh 1.7
-```
-
-To run the tests locally without docker:
+Make sure you are working the correct GOPATH and run the following in your terminal:
 
 ```
-./run_tests.sh local
+hxd -u YOURUNIQUERPCUSERNAME -P YOURUNIQUERPCPASSWORD --testnet
+```
+
+To use your node for mining add the miningaddr flag when running hxd:
+
+```
+hxd -u YOURUNIQUERPCUSERNAME -P YOURUNIQUERPCPASSWORD --testnet --miningaddr=YOURTESTNETADDRESS
+```
+
+To generate a testnet mining address you must install [hxwallet](https://github.com/hybridnetwork/hxwallet)
+
+To begin CPU mining after hxd is already running you can run the following in your terminal:
+
+```
+hxctl -u YOURUNIQUEUSERNAME -P YOURUNIQUEPASSWORD --testnet setgenerate true
 ```
 
 ## Issue Tracker
