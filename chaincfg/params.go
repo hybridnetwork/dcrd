@@ -689,7 +689,9 @@ var TestNet2Params = Params{
 	BlockTaxProportion:       1,
 
 	// Checkpoints ordered from oldest to newest.
-	Checkpoints: []Checkpoint{},
+	Checkpoints: []Checkpoint{
+		{1000, newHashFromStr("00000018552adbf05a447bffbe7eeedd3933e2db193f1ca1eda1c4f530093819")},
+	},
 
 	// Consensus rule change deployments.
 	//
