@@ -654,13 +654,7 @@ var TestNet2Params = Params{
 	Name:        "testnet2",
 	Net:         wire.TestNet2,
 	DefaultPort: "12008",
-	DNSSeeds: []string{
-		"testnet1-rc1.nucleustech.io",
-		"testnet2-rc1.nucleustech.io",
-		"testnet3-rc1.nucleustech.io",
-		"testnet4-rc1.nucleustech.io",
-		"testnet5-rc1.nucleustech.io",
-	},
+	DNSSeeds: []string{},
 
 	// Chain parameters
 	GenesisBlock:             &testNet2GenesisBlock,
@@ -689,9 +683,7 @@ var TestNet2Params = Params{
 	BlockTaxProportion:       1,
 
 	// Checkpoints ordered from oldest to newest.
-	Checkpoints: []Checkpoint{
-		{1000, newHashFromStr("00000018552adbf05a447bffbe7eeedd3933e2db193f1ca1eda1c4f530093819")},
-	},
+	Checkpoints: []Checkpoint{},
 
 	// Consensus rule change deployments.
 	//
