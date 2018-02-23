@@ -2834,6 +2834,11 @@ func opcodeCheckSigAlt(op *parsedOpcode, vm *Engine) error {
 			vm.dstack.PushBool(false)
 			return nil
 		}
+	case bliss:
+		if len(fullSigBytes) < 397 || len(fulSigBytes) > 860 {
+			vm.dstack.PushBool(false)
+			return nil
+		}
 	}
 
 	// Trim off hashtype from the signature string and check if the
