@@ -47,4 +47,4 @@ import:
   subpackages:
   - rotator
 - package: github.com/hybridnetwork/bliss
-- version: dev-bogrod
+  version: dev-bogrod

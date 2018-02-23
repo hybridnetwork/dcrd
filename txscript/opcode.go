@@ -2835,7 +2835,7 @@ func opcodeCheckSigAlt(op *parsedOpcode, vm *Engine) error {
 			return nil
 		}
 	case bliss:
-		if len(fullSigBytes) < 397 || len(fulSigBytes) > 860 {
+		if len(fullSigBytes) < 397 || len(fullSigBytes) > 860 {
 			vm.dstack.PushBool(false)
 			return nil
 		}
