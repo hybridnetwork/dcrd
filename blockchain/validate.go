@@ -2320,19 +2320,14 @@ func (b *BlockChain) consensusScriptVerifyFlags(node *blockNode) (txscript.Scrip
 		txscript.ScriptVerifyStrictEncoding |
 		txscript.ScriptVerifyMinimalData |
 		txscript.ScriptVerifyCleanStack |
-		txscript.ScriptVerifyCheckLockTimeVerify
+		txscript.ScriptVerifyCheckLockTimeVerify |
+		txscript.ScriptVerifyCheckSequenceVerify |
+		txscript.ScriptVerifySHA256
 
-	// Enable enforcement of OP_CSV and OP_SHA256 if the stake vote
-	// for the agenda is active.
-	lnFeaturesActive, err := b.isLNFeaturesAgendaActive(node.parent)
-	if err != nil {
-		return 0, err
-	}
-	if lnFeaturesActive {
-		scriptFlags |= txscript.ScriptVerifyCheckSequenceVerify
-		scriptFlags |= txscript.ScriptVerifySHA256
-	}
-	return scriptFlags, err
+	// Enable enforcement of additional txscript features if the corresponding stake vote
+	// for those agendas are active.
+
+	return scriptFlags, nil
 }
 
 // checkConnectBlock performs several checks to confirm connecting the passed
@@ -2474,37 +2469,31 @@ func (b *BlockChain) checkConnectBlock(node *blockNode, block *dcrutil.Block, ut
 	}
 
 	// Enforce all relative lock times via sequence numbers for the regular
-	// transaction tree once the stake vote for the agenda is active.
-	var prevMedianTime time.Time
-	lnFeaturesActive, err := b.isLNFeaturesAgendaActive(node.parent)
+	// transaction tree.
+
+	// Use the past median time of the *previous* block in order
+	// to determine if the transactions in the current block are
+	// final.
+	prevMedianTime, err := b.calcPastMedianTime(node.parent)
 	if err != nil {
 		return err
 	}
-	if lnFeaturesActive {
-		// Use the past median time of the *previous* block in order
-		// to determine if the transactions in the current block are
-		// final.
-		prevMedianTime, err = b.calcPastMedianTime(node.parent)
+
+	// Skip the coinbase since it does not have any inputs and thus
+	// lock times do not apply.
+	for _, tx := range block.Transactions()[1:] {
+		sequenceLock, err := b.calcSequenceLock(node, tx,
+			utxoView, true)
 		if err != nil {
 			return err
 		}
+		if !SequenceLockActive(sequenceLock, node.height,
+			prevMedianTime) {
 
-		// Skip the coinbase since it does not have any inputs and thus
-		// lock times do not apply.
-		for _, tx := range block.Transactions()[1:] {
-			sequenceLock, err := b.calcSequenceLock(node, tx,
-				utxoView, true)
-			if err != nil {
-				return err
-			}
-			if !SequenceLockActive(sequenceLock, node.height,
-				prevMedianTime) {
-
-				str := fmt.Sprintf("block contains " +
-					"transaction whose input sequence " +
-					"locks are not met")
-				return ruleError(ErrUnfinalizedTx, str)
-			}
+			str := fmt.Sprintf("block contains " +
+				"transaction whose input sequence " +
+				"locks are not met")
+			return ruleError(ErrUnfinalizedTx, str)
 		}
 	}
 
@@ -2542,22 +2531,20 @@ func (b *BlockChain) checkConnectBlock(node *blockNode, block *dcrutil.Block, ut
 	}
 
 	// Enforce all relative lock times via sequence numbers for the stake
-	// transaction tree once the stake vote for the agenda is active.
-	if lnFeaturesActive {
-		for _, stx := range block.STransactions() {
-			sequenceLock, err := b.calcSequenceLock(node, stx,
-				utxoView, true)
-			if err != nil {
-				return err
-			}
-			if !SequenceLockActive(sequenceLock, node.height,
-				prevMedianTime) {
+	// transaction tree.
+	for _, stx := range block.STransactions() {
+		sequenceLock, err := b.calcSequenceLock(node, stx,
+			utxoView, true)
+		if err != nil {
+			return err
+		}
+		if !SequenceLockActive(sequenceLock, node.height,
+			prevMedianTime) {
 
-				str := fmt.Sprintf("block contains " +
-					"stake transaction whose input " +
-					"sequence locks are not met")
-				return ruleError(ErrUnfinalizedTx, str)
-			}
+			str := fmt.Sprintf("block contains " +
+				"stake transaction whose input " +
+				"sequence locks are not met")
+			return ruleError(ErrUnfinalizedTx, str)
 		}
 	}
 

@@ -164,15 +164,7 @@ const (
 	// VoteIDSDiffAlgorithm is the vote ID for the new stake difficulty
 	// algorithm (aka ticket price) agenda defined by DCP0001.
 	VoteIDSDiffAlgorithm = "sdiffalgorithm"
-
-	// VoteIDLNSupport is the vote ID for determining if the developers
-	// should work on integrating Lightning Network support.
-	VoteIDLNSupport = "lnsupport"
-
-	// VoteIDLNFeatures is the vote ID for the agenda that introduces
-	// features useful for the Lightning Network (among other uses) defined
-	// by DCP0002 and DCP0003.
-	VoteIDLNFeatures = "lnfeatures"
+	
 )
 
 // ConsensusDeployment defines details related to a specific consensus rule
@@ -530,61 +522,6 @@ var MainNetParams = Params{
 			},
 			StartTime:  1493164800, // Apr 26th, 2017
 			ExpireTime: 1524700800, // Apr 26th, 2018
-		}, {
-			Vote: Vote{
-				Id:          VoteIDLNSupport,
-				Description: "Request developers begin work on Lightning Network (LN) integration",
-				Mask:        0x0018, // Bits 3 and 4
-				Choices: []Choice{{
-					Id:          "abstain",
-					Description: "abstain from voting",
-					Bits:        0x0000,
-					IsAbstain:   true,
-					IsNo:        false,
-				}, {
-					Id:          "no",
-					Description: "no, do not work on integrating LN support",
-					Bits:        0x0008, // Bit 3
-					IsAbstain:   false,
-					IsNo:        true,
-				}, {
-					Id:          "yes",
-					Description: "yes, begin work on integrating LN support",
-					Bits:        0x0010, // Bit 4
-					IsAbstain:   false,
-					IsNo:        false,
-				}},
-			},
-			StartTime:  1493164800, // Apr 26th, 2017
-			ExpireTime: 1508976000, // Oct 26th, 2017
-		}},
-		5: {{
-			Vote: Vote{
-				Id:          VoteIDLNFeatures,
-				Description: "Enable features defined in DCP0002 and DCP0003 necessary to support Lightning Network (LN)",
-				Mask:        0x0006, // Bits 1 and 2
-				Choices: []Choice{{
-					Id:          "abstain",
-					Description: "abstain voting for change",
-					Bits:        0x0000,
-					IsAbstain:   true,
-					IsNo:        false,
-				}, {
-					Id:          "no",
-					Description: "keep the existing consensus rules",
-					Bits:        0x0002, // Bit 1
-					IsAbstain:   false,
-					IsNo:        true,
-				}, {
-					Id:          "yes",
-					Description: "change to the new consensus rules",
-					Bits:        0x0004, // Bit 2
-					IsAbstain:   false,
-					IsNo:        false,
-				}},
-			},
-			StartTime:  1505260800, // Sep 13th, 2017
-			ExpireTime: 1536796800, // Sep 13th, 2018
 		}},
 	},
 
@@ -722,34 +659,6 @@ var TestNet2Params = Params{
 			StartTime:  1493164800, // Apr 26th, 2017
 			ExpireTime: 1524700800, // Apr 26th, 2018
 		}},
-		6: {{
-			Vote: Vote{
-				Id:          VoteIDLNFeatures,
-				Description: "Enable features defined in DCP0002 and DCP0003 necessary to support Lightning Network (LN)",
-				Mask:        0x0006, // Bits 1 and 2
-				Choices: []Choice{{
-					Id:          "abstain",
-					Description: "abstain voting for change",
-					Bits:        0x0000,
-					IsAbstain:   true,
-					IsNo:        false,
-				}, {
-					Id:          "no",
-					Description: "keep the existing consensus rules",
-					Bits:        0x0002, // Bit 1
-					IsAbstain:   false,
-					IsNo:        true,
-				}, {
-					Id:          "yes",
-					Description: "change to the new consensus rules",
-					Bits:        0x0004, // Bit 2
-					IsAbstain:   false,
-					IsNo:        false,
-				}},
-			},
-			StartTime:  1505260800, // Sep 13th, 2017
-			ExpireTime: 1536796800, // Sep 13th, 2018
-		}},
 	},
 
 	// Enforce current block version once majority of the network has
@@ -882,62 +791,6 @@ var SimNetParams = Params{
 				}, {
 					Id:          "yes",
 					Description: "accept changing max allowed block size",
-					Bits:        0x0004, // Bit 2
-					IsAbstain:   false,
-					IsNo:        false,
-				}},
-			},
-			StartTime:  0,             // Always available for vote
-			ExpireTime: math.MaxInt64, // Never expires
-		}},
-		5: {{
-			Vote: Vote{
-				Id:          VoteIDSDiffAlgorithm,
-				Description: "Change stake difficulty algorithm as defined in DCP0001",
-				Mask:        0x0006, // Bits 1 and 2
-				Choices: []Choice{{
-					Id:          "abstain",
-					Description: "abstain voting for change",
-					Bits:        0x0000,
-					IsAbstain:   true,
-					IsNo:        false,
-				}, {
-					Id:          "no",
-					Description: "keep the existing algorithm",
-					Bits:        0x0002, // Bit 1
-					IsAbstain:   false,
-					IsNo:        true,
-				}, {
-					Id:          "yes",
-					Description: "change to the new algorithm",
-					Bits:        0x0004, // Bit 2
-					IsAbstain:   false,
-					IsNo:        false,
-				}},
-			},
-			StartTime:  0,             // Always available for vote
-			ExpireTime: math.MaxInt64, // Never expires
-		}},
-		6: {{
-			Vote: Vote{
-				Id:          VoteIDLNFeatures,
-				Description: "Enable features defined in DCP0002 and DCP0003 necessary to support Lightning Network (LN)",
-				Mask:        0x0006, // Bits 1 and 2
-				Choices: []Choice{{
-					Id:          "abstain",
-					Description: "abstain voting for change",
-					Bits:        0x0000,
-					IsAbstain:   true,
-					IsNo:        false,
-				}, {
-					Id:          "no",
-					Description: "keep the existing consensus rules",
-					Bits:        0x0002, // Bit 1
-					IsAbstain:   false,
-					IsNo:        true,
-				}, {
-					Id:          "yes",
-					Description: "change to the new consensus rules",
 					Bits:        0x0004, // Bit 2
 					IsAbstain:   false,
 					IsNo:        false,
