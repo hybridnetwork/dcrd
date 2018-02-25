@@ -30,9 +30,7 @@ import:
 - package: github.com/dchest/blake256
 - package: github.com/hybridnetwork/bitset
 - package: github.com/hybridnetwork/hxrpcclient
-  version: dev-v0.0.1
 - package: github.com/hybridnetwork/hxutil
-  version: dev-v0.0.1
   subpackages:
   - bloom
   - hdkeychain
@@ -47,4 +45,3 @@ import:
   subpackages:
   - rotator
 - package: github.com/hybridnetwork/bliss
-  version: dev-bogrod
