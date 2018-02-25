@@ -556,7 +556,13 @@ var TestNet2Params = Params{
 	Name:        "testnet2",
 	Net:         wire.TestNet2,
 	DefaultPort: "12008",
-	DNSSeeds:    []string{},
+	DNSSeeds: []string{
+		"testnet6-rc1.nucleustech.io",
+		"testnet7-rc1.nucleustech.io",
+		"testnet8-rc1.nucleustech.io",
+		"testnet9-rc1.nucleustech.io",
+		"testnet10-rc1.nucleustech.io",
+	},
 
 	// Chain parameters
 	GenesisBlock:             &testNet2GenesisBlock,
@@ -650,8 +656,8 @@ var TestNet2Params = Params{
 	StakeMajorityDivisor:    4,
 
 	// Decred organization related parameters.
-	// Organization address is Tb8e1PwHAVTURn6HYQVYt3C4RmD4G4Byyhm
-	OrganizationPkScript:        hexDecode("76a91488da32f8cfaed3c1a703626f58e002c0e116c8f38854be"),
+	// Organization address is TcYvmPS6xs41gJExBaeUzT55epgwtHzjMAC
+	OrganizationPkScript:        hexDecode("5221031377eb7eb294ba8d0c81bb64a047c9b36561f3899507679b38cfcbf59e016f9421036806c694f4d5d617259b5fabaf9ad84c20c2bf57b1a171fb6048215d6d71e13e52ae"),
 	OrganizationPkScriptVersion: 0,
 	BlockOneLedger:              BlockOneLedgerTestNet2,
 }
@@ -828,7 +834,7 @@ var (
 	// ErrDuplicateNet describes an error where the parameters for a Decred
 	// network could not be set due to the network already being a standard
 	// network or previously-registered into this package.
-	ErrDuplicateNet = errors.New("duplicate Decred network")
+	ErrDuplicateNet = errors.New("duplicate Hx network")
 
 	// ErrUnknownHDKeyID describes an error where the provided id which
 	// is intended to identify the network for a hierarchical deterministic
