@@ -556,21 +556,15 @@ var TestNet2Params = Params{
 	Name:        "testnet2",
 	Net:         wire.TestNet2,
 	DefaultPort: "12008",
-	DNSSeeds: []string{
-		"testnet6-rc1.nucleustech.io",
-		"testnet7-rc1.nucleustech.io",
-		"testnet8-rc1.nucleustech.io",
-		"testnet9-rc1.nucleustech.io",
-		"testnet10-rc1.nucleustech.io",
-	},
+	DNSSeeds: []string{},
 
 	// Chain parameters
 	GenesisBlock:             &testNet2GenesisBlock,
 	GenesisHash:              &testNet2GenesisHash,
 	PowLimit:                 testNetPowLimit,
 	PowLimitBits:             0x1e00ffff,
-	ReduceMinDifficulty:      false,
-	MinDiffReductionTime:     0, // Does not apply since ReduceMinDifficulty false
+	ReduceMinDifficulty:      true,
+	MinDiffReductionTime:     time.Minute * 30, // Does not apply since ReduceMinDifficulty false
 	GenerateSupported:        true,
 	MaximumBlockSizes:        []int{1310720},
 	MaxTxSize:                1000000,
