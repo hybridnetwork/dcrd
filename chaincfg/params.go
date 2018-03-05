@@ -557,10 +557,10 @@ var TestNet2Params = Params{
 	Net:         wire.TestNet2,
 	DefaultPort: "12008",
 	DNSSeeds: []string{
-		"testnode1-rc1-.nucleustech.io",
-		"testnode2-rc1-.nucleustech.io",
-		"testnode3-rc1-.nucleustech.io",
-		"testnode4-rc1-.nucleustech.io",
+		"testnode1-rc1.nucleustech.io",
+		"testnode2-rc1.nucleustech.io",
+		"testnode3-rc1.nucleustech.io",
+		"testnode4-rc1.nucleustech.io",
 	},
 
 	// Chain parameters
