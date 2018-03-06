@@ -556,7 +556,12 @@ var TestNet2Params = Params{
 	Name:        "testnet2",
 	Net:         wire.TestNet2,
 	DefaultPort: "12008",
-	DNSSeeds: []string{},
+	DNSSeeds: []string{
+		"or-node-3.testnet.hybrid.network",
+		"sin-node-6.testnet.hybrid.network",
+		"or-node-4.testnet.hybrid.network",
+		"oh-node-11.testnet.hybrid.network",
+	},
 
 	// Chain parameters
 	GenesisBlock:             &testNet2GenesisBlock,
@@ -588,6 +593,7 @@ var TestNet2Params = Params{
 	Checkpoints: []Checkpoint{
 		{100,newHashFromStr("000000e02784586c22a1be9616c17d54568cb47c6d024b791f05bbb3f14974ed")},
 		{400,newHashFromStr("00000047c3baad68272c4b3f55482a7f64ad78a33472a6ae0555d7ff97152d2d")},
+		{500,newHashFromStr("00000015c42dfa457f15387dfabbe6d82c936dfcd901c48b805583f7364760e4")},
 	},
 
 	// Consensus rule change deployments.
