@@ -4,9 +4,9 @@ hxd
 [![ISC License](http://img.shields.io/badge/license-ISC-blue.svg)](http://copyfree.org)
 
 ## Important Info for RC1 Testnet
-RC1 Testnet is being restarted with updated parameters to prevent the issue of no blocks being made for long periods of time after ASIC miners join the network and leave once the difficulty has increased. Users who have previously connected to RC1 testnet will need to follow the instructions below to ensure they are on the most up-to-date network. When the status below is "Active" you can follow the install instructions below to connect. When the status is "Temporarily Inactive" please wait until the status is updated to "Active" before attempting to join the testnet. *If you have previously connected to RC1 testnet you will need to follow the instructions below to connect to the most recent testnet! If you cannot find peers it is because the DNS seeds are not yet active. In this case you must wait until the Status is updated to Active and follow the instructions below to grab the latest peer info.*
+RC1 Testnet is being restarted with updated parameters to prevent the issue of no blocks being made for long periods of time after ASIC miners join the network and leave once the difficulty has increased. Users who have previously connected to RC1 testnet will need to follow the instructions below to ensure they are on the most up-to-date network. When the status below is "Active" you can follow the install instructions below to connect. When the status is "Temporarily Inactive" please wait until the status is updated to "Active" before attempting to join the testnet. *If you have previously connected to RC1 testnet you will need to follow the instructions below to connect to the most recent testnet! If you cannot find peers it is because the DNS seeds are not yet active. In this case you must wait until the Status is updated to Active and follow the instructions below to grab the latest peer info. Additionally you will need to create a new wallet and set a new config file.*
 
-### Status: *Temporarily Inactive*
+### Status: *Active*
 
 #### Linux
 ```
