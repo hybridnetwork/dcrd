@@ -902,11 +902,11 @@ func handleTooFewVoters(subsidyCache *blockchain.SubsidyCache,
 				// and the contents of that stake tree. In the future
 				// we should have the option of readding some
 				// transactions from this block, too.
-				topBlock, err :=
-					bm.GetTopBlockFromChain()
+				topBlock, err := bm.chain.FetchBlockFromHash(&prevBlockHash)
 				if err != nil {
-					return nil, fmt.Errorf("failed to get top block from " +
-						"chain")
+					str := fmt.Sprintf("unable to get tip block %s",
+						prevBlockHash)
+					return nil, miningRuleError(ErrGetTopBlock, str)
 				}
 				btMsgBlock := new(wire.MsgBlock)
 				rand, err := wire.RandomUint64()
@@ -1744,10 +1744,10 @@ mempoolLoop:
 			// out.
 			// Decred TODO: This is super inefficient, this block should be
 			// cached and stored somewhere.
-			topBlock, err := blockManager.GetTopBlockFromChain()
+			topBlock, err := blockManager.chain.FetchBlockFromHash(prevHash)
 			if err != nil {
-				return nil, miningRuleError(ErrGetTopBlock, "couldn't get "+
-					"top block")
+				str := fmt.Sprintf("unable to get tip block %s", prevHash)
+				return nil, miningRuleError(ErrGetTopBlock, str)
 			}
 			topBlockRegTx := topBlock.Transactions()
 
