@@ -1202,6 +1202,67 @@ func (b *blockManager) handleBlockMsg(bmsg *blockMsg) {
 				rpcServer.gbtWorkState.NotifyBlockConnected(blockHash)
 			}
 		}
+
+		if !b.chain.BestSnapshot().Hash.IsEqual(b.chainState.newestHash){
+			fmt.Println("This fix of bug occurs 01")
+			best := b.chain.BestSnapshot()
+			blockHash := best.Hash
+			// Query the DB for the missed tickets for the next top block.
+			missedTickets, err := b.chain.MissedTickets()
+			if err != nil {
+				bmgrLog.Warnf("Failed to get missed tickets "+
+					"for best block %v: %v", best.Hash, err)
+			}
+
+			// Retrieve the current previous block hash.
+			curPrevHash := b.chain.BestPrevHash()
+
+			nextStakeDiff, errSDiff :=
+				b.chain.CalcNextRequiredStakeDifficulty()
+			if errSDiff != nil {
+				bmgrLog.Warnf("Failed to get next stake difficulty "+
+					"calculation: %v", err)
+			}
+			if r != nil && errSDiff == nil {
+				// Update registered websocket clients on the
+				// current stake difficulty.
+				r.ntfnMgr.NotifyStakeDifficulty(
+					&StakeDifficultyNtfnData{
+						*best.Hash,
+						best.Height,
+						nextStakeDiff,
+					})
+				b.server.txMemPool.PruneStakeTx(nextStakeDiff,
+					best.Height)
+				b.server.txMemPool.PruneExpiredTx(best.Height)
+			}
+			winningTickets, poolSize, finalState, err :=
+				b.chain.LotteryDataForBlock(blockHash)
+			if err != nil {
+				bmgrLog.Warnf("Failed to get determine lottery "+
+					"data for new best block: %v", err)
+			}
+
+			b.updateChainState(best.Hash, best.Height, finalState,
+				uint32(poolSize), nextStakeDiff, winningTickets,
+				missedTickets, curPrevHash)
+
+			// Update this peer's latest block height, for future
+			// potential sync node candidancy.
+			blkHashUpdate = best.Hash
+
+			// Clear the rejected transactions.
+			b.rejectedTxns = make(map[chainhash.Hash]struct{})
+
+			// Allow any clients performing long polling via the
+			// getblocktemplate RPC to be notified when the new block causes
+			// their old block template to become stale.
+			rpcServer := b.server.rpcServer
+			if rpcServer != nil {
+				rpcServer.gbtWorkState.NotifyBlockConnected(blockHash)
+			}
+		}
+		
 	}
 
 	// Update the block height for this peer. But only send a message to
@@ -1760,6 +1821,8 @@ out:
 						curPrevHash)
 				}
 
+
+
 				msg.reply <- forceReorganizationResponse{
 					err: err,
 				}
@@ -1891,6 +1954,56 @@ out:
 						winningTickets,
 						missedTickets,
 						curPrevHash)
+				}
+
+				if !b.chain.BestSnapshot().Hash.IsEqual(b.chainState.newestHash){
+					fmt.Println("This fix of bug occurs 02")
+					best := b.chain.BestSnapshot()
+					nextStakeDiff, err :=
+						b.chain.CalcNextRequiredStakeDifficulty()
+					if err != nil {
+						bmgrLog.Warnf("Failed to get next stake difficulty "+
+							"calculation: %v", err)
+					} else {
+						r := b.server.rpcServer
+						if r != nil {
+							r.ntfnMgr.NotifyStakeDifficulty(
+								&StakeDifficultyNtfnData{
+									*best.Hash,
+									best.Height,
+									nextStakeDiff,
+								})
+						}
+					}
+					b.server.txMemPool.PruneStakeTx(nextStakeDiff,
+						best.Height)
+					b.server.txMemPool.PruneExpiredTx(
+						best.Height)
+
+					missedTickets, err := b.chain.MissedTickets()
+					if err != nil {
+						bmgrLog.Warnf("Failed to get missing tickets for "+
+							"incoming block %v: %v", best.Hash, err)
+					}
+					curPrevHash := b.chain.BestPrevHash()
+
+					winningTickets, poolSize, finalState, err :=
+						b.chain.LotteryDataForBlock(best.Hash)
+					if err != nil {
+						bmgrLog.Warnf("Failed to determine block "+
+							"lottery data for incoming best block %v: %v",
+							best.Hash, err)
+					}
+
+					b.updateChainState(best.Hash,
+						best.Height,
+						finalState,
+						uint32(poolSize),
+						nextStakeDiff,
+						winningTickets,
+						missedTickets,
+						curPrevHash)
+
 				}
 
 				// Allow any clients performing long polling via the
