@@ -572,6 +572,41 @@ func (b *BlockChain) addOrphanBlock(block *dcrutil.Block) {
 	return
 }
 
+// tipGeneration returns the entire generation of blocks stemming from the
+// parent of the current tip.
+//
+// This function MUST be called with the chain lock held (for reads).
+func (b *BlockChain) tipGeneration() ([]chainhash.Hash, error) {
+	// Get the parent of this tip.
+	p, err := b.getPrevNodeFromNode(b.bestNode)
+	if err != nil {
+		return nil, fmt.Errorf("block is orphan (parent missing)")
+	}
+	if p == nil {
+		return nil, fmt.Errorf("no need to get children of genesis block")
+	}
+
+	// Store all the hashes in a new slice and return them.
+	lenChildren := len(p.children)
+	allChildren := make([]chainhash.Hash, lenChildren)
+	for i := 0; i < lenChildren; i++ {
+		allChildren[i] = p.children[i].hash
+	}
+
+	return allChildren, nil
+}
+
+// TipGeneration returns the entire generation of blocks stemming from the
+// parent of the current tip.
+//
+// The function is safe for concurrent access.
+func (b *BlockChain) TipGeneration() ([]chainhash.Hash, error) {
+	b.chainLock.Lock()
+	children, err := b.tipGeneration()
+	b.chainLock.Unlock()
+	return children, err
+}
+
 // getGeneration gets a generation of blocks who all have the same parent by
 // taking a hash as input, locating its parent node, and then returning all
 // children for that parent node including the hash passed.  This can then be

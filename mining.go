@@ -1208,7 +1208,7 @@ func NewBlockTemplate(policy *mining.Policy, server *server,
 
 	if nextBlockHeight >= stakeValidationHeight {
 		// Obtain the entire generation of blocks stemming from this parent.
-		children, err := blockManager.GetGeneration(*prevHash)
+		children, err := blockManager.TipGeneration()
 		if err != nil {
 			return nil, miningRuleError(ErrFailedToGetGeneration, err.Error())
 		}
