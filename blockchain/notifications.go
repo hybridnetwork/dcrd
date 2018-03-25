@@ -9,7 +9,7 @@ import (
 	"fmt"
 
 	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
-	dcrutil "github.com/hybridnetwork/hxutil"
+	dcrutil "github.com/hybridnetwork/hxd/hxutil"
 )
 
 // NotificationType represents the type of a notification message.

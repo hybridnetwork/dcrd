@@ -21,9 +21,9 @@ import (
 	"github.com/hybridnetwork/hxd/chaincfg"
 	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
 	"github.com/hybridnetwork/hxd/database"
+	dcrutil "github.com/hybridnetwork/hxd/hxutil"
 	"github.com/hybridnetwork/hxd/mempool"
 	"github.com/hybridnetwork/hxd/wire"
-	dcrutil "github.com/hybridnetwork/hxutil"
 )
 
 const (
@@ -330,7 +330,6 @@ type chainState struct {
 	missedTickets       []chainhash.Hash
 	curPrevHash         chainhash.Hash
 	pastMedianTime      time.Time
-	stakeVersion        uint32
 }
 
 // Best returns the block hash and height known for the tip of the best known
@@ -953,8 +952,6 @@ func (b *blockManager) checkBlockForHiddenVotes(block *dcrutil.Block) {
 	template.Block.Header.Voters = uint16(votesTotal)
 	template.Block.Header.StakeRoot = *smerkles[len(smerkles)-1]
 	template.Block.Header.Size = uint32(template.Block.SerializeSize())
-
-	return
 }
 
 // handleBlockMsg handles block messages from all peers.
@@ -2531,7 +2528,6 @@ func (b *blockManager) SetCurrentTemplate(bt *BlockTemplate) {
 	reply := make(chan setCurrentTemplateResponse)
 	b.msgChan <- setCurrentTemplateMsg{Template: bt, reply: reply}
 	<-reply
-	return
 }
 
 // GetParentTemplate gets the current parent block template for mining.
@@ -2547,7 +2543,6 @@ func (b *blockManager) SetParentTemplate(bt *BlockTemplate) {
 	reply := make(chan setParentTemplateResponse)
 	b.msgChan <- setParentTemplateMsg{Template: bt, reply: reply}
 	<-reply
-	return
 }
 
 // newBlockManager returns a new decred block manager.

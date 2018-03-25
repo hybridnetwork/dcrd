@@ -14,7 +14,8 @@ import (
 	"strings"
 	"time"
 
-	dcrutil "github.com/hybridnetwork/hxutil"
+	"github.com/hybridnetwork/hxd/certgen"
+	dcrutil "github.com/hybridnetwork/hxd/hxutil"
 	flags "github.com/jessevdk/go-flags"
 )
 
@@ -60,7 +61,7 @@ func main() {
 	}
 
 	validUntil := time.Now().Add(time.Duration(cfg.Years) * 365 * 24 * time.Hour)
-	cert, key, err := dcrutil.NewTLSCertPair(elliptic.P521(), cfg.Organization, validUntil, cfg.ExtraHosts)
+	cert, key, err := certgen.NewTLSCertPair(elliptic.P521(), cfg.Organization, validUntil, cfg.ExtraHosts)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "cannot generate certificate pair: %v\n", err)
 		os.Exit(1)

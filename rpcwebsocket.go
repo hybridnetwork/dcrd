@@ -27,9 +27,9 @@ import (
 	"github.com/hybridnetwork/hxd/blockchain/stake"
 	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
 	"github.com/hybridnetwork/hxd/dcrjson"
+	dcrutil "github.com/hybridnetwork/hxd/hxutil"
 	"github.com/hybridnetwork/hxd/txscript"
 	"github.com/hybridnetwork/hxd/wire"
-	dcrutil "github.com/hybridnetwork/hxutil"
 )
 
 const (

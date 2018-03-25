@@ -8,8 +8,8 @@ package blockchain
 import (
 	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
 	"github.com/hybridnetwork/hxd/database"
+	dcrutil "github.com/hybridnetwork/hxd/hxutil"
 	"github.com/hybridnetwork/hxd/txscript"
-	dcrutil "github.com/hybridnetwork/hxutil"
 )
 
 // NextLotteryData returns the next tickets eligible for spending as SSGen

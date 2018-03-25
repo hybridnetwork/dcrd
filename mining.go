@@ -18,11 +18,11 @@ import (
 	"github.com/hybridnetwork/hxd/blockchain/stake"
 	"github.com/hybridnetwork/hxd/chaincfg"
 	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
+	dcrutil "github.com/hybridnetwork/hxd/hxutil"
 	"github.com/hybridnetwork/hxd/mempool"
 	"github.com/hybridnetwork/hxd/mining"
 	"github.com/hybridnetwork/hxd/txscript"
 	"github.com/hybridnetwork/hxd/wire"
-	dcrutil "github.com/hybridnetwork/hxutil"
 )
 
 const (

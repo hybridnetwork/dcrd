@@ -11,7 +11,7 @@ import (
 
 	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
 	"github.com/hybridnetwork/hxd/database"
-	dcrutil "github.com/hybridnetwork/hxutil"
+	dcrutil "github.com/hybridnetwork/hxd/hxutil"
 )
 
 // BehaviorFlags is a bitmask defining tweaks to the normal behavior when

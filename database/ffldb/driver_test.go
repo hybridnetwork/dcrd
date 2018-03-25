@@ -16,7 +16,7 @@ import (
 	"github.com/hybridnetwork/hxd/chaincfg"
 	"github.com/hybridnetwork/hxd/database"
 	"github.com/hybridnetwork/hxd/database/ffldb"
-	dcrutil "github.com/hybridnetwork/hxutil"
+	dcrutil "github.com/hybridnetwork/hxd/hxutil"
 )
 
 // dbType is the database type name for this driver.

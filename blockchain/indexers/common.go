@@ -13,7 +13,7 @@ import (
 
 	"github.com/hybridnetwork/hxd/blockchain"
 	"github.com/hybridnetwork/hxd/database"
-	dcrutil "github.com/hybridnetwork/hxutil"
+	dcrutil "github.com/hybridnetwork/hxd/hxutil"
 )
 
 var (

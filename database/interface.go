@@ -10,7 +10,7 @@ package database
 
 import (
 	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
-	dcrutil "github.com/hybridnetwork/hxutil"
+	dcrutil "github.com/hybridnetwork/hxd/hxutil"
 )
 
 // Cursor represents a cursor over key/value pairs and nested buckets of a

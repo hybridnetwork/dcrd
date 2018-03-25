@@ -1156,7 +1156,7 @@ package main
 
 import (
 	"github.com/hybridnetwork/hxrpcclient"
-	"github.com/hybridnetwork/hxutil"
+	dcrutil "github.com/hybridnetwork/hxd/hxutil"
 	"io/ioutil"
 	"log"
 	"path/filepath"
@@ -1217,7 +1217,7 @@ package main
 
 import (
 	"github.com/hybridnetwork/hxrpcclient"
-	"github.com/hybridnetwork/hxutil"
+	dcrutil "github.com/hybridnetwork/hxd/hxutil"
 	"github.com/hybridnetwork/hxd/wire"
 	"io/ioutil"
 	"log"
@@ -1308,7 +1308,7 @@ package main
 
 import (
 	"github.com/hybridnetwork/hxrpcclient"
-	"github.com/hybridnetwork/hxutil"
+	dcrutil "github.com/hybridnetwork/hxd/hxutil"
 	"github.com/hybridnetwork/hxd/wire"
 	"io/ioutil"
 	"log"

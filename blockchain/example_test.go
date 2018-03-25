@@ -15,7 +15,7 @@ import (
 	"github.com/hybridnetwork/hxd/chaincfg"
 	"github.com/hybridnetwork/hxd/database"
 	_ "github.com/hybridnetwork/hxd/database/ffldb"
-	dcrutil "github.com/hybridnetwork/hxutil"
+	dcrutil "github.com/hybridnetwork/hxd/hxutil"
 )
 
 // This example demonstrates how to create a new chain instance and use

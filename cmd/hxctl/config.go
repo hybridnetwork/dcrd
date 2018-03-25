@@ -15,7 +15,7 @@ import (
 	"strings"
 
 	"github.com/hybridnetwork/hxd/dcrjson"
-	dcrutil "github.com/hybridnetwork/hxutil"
+	dcrutil "github.com/hybridnetwork/hxd/hxutil"
 
 	flags "github.com/jessevdk/go-flags"
 )

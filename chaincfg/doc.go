@@ -25,7 +25,7 @@
 //          "fmt"
 //          "log"
 //
-//          dcrutil "github.com/hybridnetwork/hxutil"
+//          dcrutil "github.com/hybridnetwork/hxd/hxutil"
 //          "github.com/hybridnetwork/hxd/chaincfg"
 //  )
 //

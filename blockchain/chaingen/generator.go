@@ -17,9 +17,9 @@ import (
 	"github.com/hybridnetwork/hxd/blockchain"
 	"github.com/hybridnetwork/hxd/chaincfg"
 	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
+	dcrutil "github.com/hybridnetwork/hxd/hxutil"
 	"github.com/hybridnetwork/hxd/txscript"
 	"github.com/hybridnetwork/hxd/wire"
-	dcrutil "github.com/hybridnetwork/hxutil"
 )
 
 var (
@@ -239,7 +239,7 @@ func UniqueOpReturnScript() []byte {
 		panic(err)
 	}
 
-	data := make([]byte, 8, 8)
+	data := make([]byte, 8)
 	binary.LittleEndian.PutUint64(data[0:8], rand)
 	return opReturnScript(data)
 }
@@ -332,7 +332,7 @@ func standardCoinbaseOpReturnScript(blockHeight uint32) []byte {
 		panic(err)
 	}
 
-	data := make([]byte, 36, 36)
+	data := make([]byte, 36)
 	binary.LittleEndian.PutUint32(data[0:4], blockHeight)
 	binary.LittleEndian.PutUint64(data[28:36], rand)
 	return opReturnScript(data)

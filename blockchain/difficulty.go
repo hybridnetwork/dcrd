@@ -322,11 +322,10 @@ func (b *BlockChain) calcNextRequiredDifficulty(curNode *blockNode,
 
 	// Regress through all of the previous blocks and store the percent changes
 	// per window period; use bigInts to emulate 64.32 bit fixed point.
+	var olderTime, windowPeriod int64
+	var weights uint64
 	oldNode := curNode
-	windowPeriod := int64(0)
-	weights := uint64(0)
 	recentTime := curNode.header.Timestamp.UnixNano()
-	olderTime := int64(0)
 
 	for i := int64(0); ; i++ {
 		// Store and reset after reaching the end of every window period.
@@ -505,7 +504,7 @@ func estimateSupply(params *chaincfg.Params, height int64) int64 {
 	// interval then adding the subsidy produced by number of blocks in the
 	// current interval.
 	supply := params.BlockOneSubsidy()
-	reductions := int64(height) / params.SubsidyReductionInterval
+	reductions := height / params.SubsidyReductionInterval
 	subsidy := params.BaseSubsidy
 	for i := int64(0); i < reductions; i++ {
 		supply += params.SubsidyReductionInterval * subsidy
@@ -513,7 +512,7 @@ func estimateSupply(params *chaincfg.Params, height int64) int64 {
 		subsidy *= params.MulSubsidy
 		subsidy /= params.DivSubsidy
 	}
-	supply += (1 + int64(height)%params.SubsidyReductionInterval) * subsidy
+	supply += (1 + height%params.SubsidyReductionInterval) * subsidy
 
 	// Blocks 0 and 1 have special subsidy amounts that have already been
 	// added above, so remove what their subsidies would have normally been
@@ -834,7 +833,7 @@ func (b *BlockChain) estimateNextStakeDifficultyV2(curNode *blockNode, newTicket
 
 	// Calculate the number of votes that will occur during the remainder of
 	// the interval.
-	stakeValidationHeight := int64(b.chainParams.StakeValidationHeight)
+	stakeValidationHeight := b.chainParams.StakeValidationHeight
 	var pendingVotes int64
 	if nextRetargetHeight > stakeValidationHeight {
 		votingBlocks := blocksUntilRetarget - 1

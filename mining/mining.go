@@ -10,7 +10,7 @@ import (
 
 	"github.com/hybridnetwork/hxd/blockchain/stake"
 	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
-	dcrutil "github.com/hybridnetwork/hxutil"
+	dcrutil "github.com/hybridnetwork/hxd/hxutil"
 )
 
 // TxDesc is a descriptor about a transaction in a transaction source along with

@@ -8,8 +8,8 @@ import (
 	"fmt"
 
 	"github.com/hybridnetwork/hxd/blockchain/stake"
+	dcrutil "github.com/hybridnetwork/hxd/hxutil"
 	"github.com/hybridnetwork/hxd/wire"
-	dcrutil "github.com/hybridnetwork/hxutil"
 )
 
 // SequenceLock represents the minimum timestamp and minimum block height after
@@ -134,7 +134,7 @@ func (b *BlockChain) calcSequenceLock(node *blockNode, tx *dcrutil.Tx, view *Utx
 			// input height and required relative number of blocks.
 			// Also, subtract one from the relative lock in order to
 			// maintain the original lock time semantics.
-			minHeight := inputHeight + int64(relativeLock) - 1
+			minHeight := inputHeight + relativeLock - 1
 			if minHeight > sequenceLock.MinHeight {
 				sequenceLock.MinHeight = minHeight
 			}

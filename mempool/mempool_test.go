@@ -18,9 +18,9 @@ import (
 	"github.com/hybridnetwork/hxd/chaincfg/chainec"
 	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
 	"github.com/hybridnetwork/hxd/dcrec/secp256k1"
+	dcrutil "github.com/hybridnetwork/hxd/hxutil"
 	"github.com/hybridnetwork/hxd/txscript"
 	"github.com/hybridnetwork/hxd/wire"
-	dcrutil "github.com/hybridnetwork/hxutil"
 )
 
 // fakeChain is used by the pool harness to provide generated test utxos and

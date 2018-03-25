@@ -12,9 +12,9 @@ import (
 
 	"github.com/hybridnetwork/hxd/blockchain/stake"
 	"github.com/hybridnetwork/hxd/chaincfg"
+	dcrutil "github.com/hybridnetwork/hxd/hxutil"
 	"github.com/hybridnetwork/hxd/txscript"
 	"github.com/hybridnetwork/hxd/wire"
-	dcrutil "github.com/hybridnetwork/hxutil"
 )
 
 // The number of values to precalculate on initialization of the subsidy

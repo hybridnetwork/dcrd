@@ -17,8 +17,8 @@ import (
 	"github.com/hybridnetwork/hxd/blockchain"
 	"github.com/hybridnetwork/hxd/blockchain/stake"
 	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
+	"github.com/hybridnetwork/hxd/rpcclient"
 	"github.com/hybridnetwork/hxd/wire"
-	dcrrpcclient "github.com/hybridnetwork/hxrpcclient"
 )
 
 // Codes that are returned to the operating system.
@@ -75,7 +75,7 @@ func isDevPremineOut(out wire.OutPoint) bool {
 
 // traceDevPremineOuts returns a list of outpoints that are part of the dev
 // premine coins and are ancestors of the inputs to the passed transaction hash.
-func traceDevPremineOuts(client *dcrrpcclient.Client, txHash *chainhash.Hash) ([]wire.OutPoint, error) {
+func traceDevPremineOuts(client *rpcclient.Client, txHash *chainhash.Hash) ([]wire.OutPoint, error) {
 	// Trace the lineage of all inputs to the provided transaction back to
 	// the coinbase outputs that generated them and add those outpoints to
 	// a list.  Also, keep track of all of the processed transactions in
@@ -220,14 +220,14 @@ func realMain() int {
 			err)
 		return rcError
 	}
-	connCfg := &dcrrpcclient.ConnConfig{
+	connCfg := &rpcclient.ConnConfig{
 		Host:         cfg.RPCServer,
 		Endpoint:     "ws",
 		User:         cfg.RPCUser,
 		Pass:         cfg.RPCPassword,
 		Certificates: certs,
 	}
-	client, err := dcrrpcclient.New(connCfg, nil)
+	client, err := rpcclient.New(connCfg, nil)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to dcrd RPC server: "+
 			"%v\n", err)

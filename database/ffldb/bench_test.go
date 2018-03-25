@@ -12,7 +12,7 @@ import (
 
 	"github.com/hybridnetwork/hxd/chaincfg"
 	"github.com/hybridnetwork/hxd/database"
-	dcrutil "github.com/hybridnetwork/hxutil"
+	dcrutil "github.com/hybridnetwork/hxd/hxutil"
 )
 
 // BenchmarkBlockHeader benchmarks how long it takes to load the mainnet genesis

@@ -16,7 +16,7 @@ import (
 	"github.com/hybridnetwork/hxd/blockchain"
 	"github.com/hybridnetwork/hxd/chaincfg"
 	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
-	dcrutil "github.com/hybridnetwork/hxutil"
+	dcrutil "github.com/hybridnetwork/hxd/hxutil"
 )
 
 // reorgTestLong does a single, large reorganization.
@@ -127,8 +127,6 @@ func reorgTestLong(t *testing.T, params *chaincfg.Params) {
 		t.Errorf("unexpected error testing for presence of new tip block "+
 			"after reorg test: %v", err)
 	}
-
-	return
 }
 
 // reorgTestsShort does short reorganizations to test multiple, frequent
@@ -246,8 +244,6 @@ func reorgTestShort(t *testing.T, params *chaincfg.Params) {
 		t.Errorf("unexpected error testing for presence of new tip block "+
 			"after reorg test: %v", err)
 	}
-
-	return
 }
 
 // reorgTestsForced tests a forced reorganization of a single block at HEAD.
@@ -360,8 +356,6 @@ func reorgTestForced(t *testing.T, params *chaincfg.Params) {
 		t.Errorf("unexpected error testing for presence of new tip block "+
 			"after reorg test: %v", err)
 	}
-
-	return
 }
 
 // TestReorganization loads a set of test blocks which force a chain

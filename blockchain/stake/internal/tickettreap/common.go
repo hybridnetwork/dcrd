@@ -6,14 +6,15 @@
 package tickettreap
 
 import (
-	"math/rand"
-	"sync"
-	"time"
+	"fmt"
 
 	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
 )
 
 const (
+	// ptrSize is the number of bytes in a native pointer
+	ptrSize = 4 << (^uintptr(0) >> 63)
+
 	// staticDepth is the size of the static array to use for keeping track
 	// of the parent stack during treap iteration.  Since a treap has a very
 	// high probability that the tree height is logarithmic, it is
@@ -22,50 +23,14 @@ const (
 	staticDepth = 128
 
 	// nodeFieldsSize is the size the fields of each node takes excluding
-	// the contents of the key and value.  It assumes 64-bit pointers so
-	// technically it is smaller on 32-bit platforms, but overestimating the
-	// size in that case is acceptable since it avoids the need to import
-	// unsafe.  It consists of 8 bytes for each of the value, priority,
-	// left, and right fields (8*4).
-	nodeFieldsSize = 32
+	// the contents of the value.
+	// Size = 32 (key) + 8 (value pointer) + 4 (priority) + 4 (size)
+	//      + 8 (left pointer) + 8 (right pointer).
+	nodeFieldsSize = 32 + ptrSize + 4 + 4 + 2*ptrSize
 
-	// nodeValueSize is the size of the fixed-size fields of a Value.
-	nodeValueSize = 4
-)
-
-// lockedSource is a rng source that is safe for concurrent access.
-type lockedSource struct {
-	lock sync.Mutex
-	src  rand.Source
-}
-
-// Int63 returns a non-negative pseudo-random 63-bit integer as an int64.
-//
-// This function is safe for concurrent access.
-//
-// This is part of the implementation for the rand.Source interface.
-func (r *lockedSource) Int63() int64 {
-	r.lock.Lock()
-	n := r.src.Int63()
-	r.lock.Unlock()
-	return n
-}
-
-// Seed uses the provided seed value to initialize the generator to a
-// deterministic state.
-//
-// This function is safe for concurrent access.
-//
-// This is part of the implementation for the rand.Source interface.
-func (r *lockedSource) Seed(seed int64) {
-	r.lock.Lock()
-	r.src.Seed(seed)
-	r.lock.Unlock()
-}
-
-var (
-	// rng is a new random number generator that is local to the package.
-	rng = rand.New(&lockedSource{src: rand.NewSource(time.Now().UnixNano())})
+	// nodeValueSize is the size of the fixed-size fields of a Value,
+	// Height (4 bytes) plus (4*1 byte).
+	nodeValueSize = 8
 )
 
 // Key defines the key used to add an associated value to the treap.
@@ -87,7 +52,8 @@ type Value struct {
 type treapNode struct {
 	key      Key
 	value    *Value
-	priority int
+	priority uint32
+	size     uint32 // Count of items within this treap - the node itself counts as 1.
 	left     *treapNode
 	right    *treapNode
 }
@@ -100,8 +66,52 @@ func nodeSize(node *treapNode) uint64 {
 
 // newTreapNode returns a new node from the given key, value, and priority.  The
 // node is not initially linked to any others.
-func newTreapNode(key Key, value *Value, priority int) *treapNode {
-	return &treapNode{key: key, value: value, priority: priority}
+func newTreapNode(key Key, value *Value, priority uint32) *treapNode {
+	return &treapNode{key: key, value: value, priority: priority, size: 1}
+}
+
+// leftSize returns the size of the subtree on the left-hand side, and zero if
+// there is no tree present there.
+func (t *treapNode) leftSize() uint32 {
+	if t.left != nil {
+		return t.left.size
+	}
+	return 0
+}
+
+// rightSize returns the size of the subtree on the right-hand side, and zero if
+// there is no tree present there.
+func (t *treapNode) rightSize() uint32 {
+	if t.right != nil {
+		return t.right.size
+	}
+	return 0
+}
+
+// getByIndex returns the (Key, *Value) at the given position and panics if idx is
+// out of bounds.
+func (t *treapNode) getByIndex(idx int) (Key, *Value) {
+	if idx < 0 || idx > int(t.size) {
+		panic(fmt.Sprintf("getByIndex(%v) index out of bounds", idx))
+	}
+	node := t
+	for {
+		if node.left == nil {
+			if idx == 0 {
+				return node.key, node.value
+			} else {
+				node, idx = node.right, idx-1
+			}
+		} else {
+			if idx < int(node.left.size) {
+				node = node.left
+			} else if idx == int(node.left.size) {
+				return node.key, node.value
+			} else {
+				node, idx = node.right, idx-int(node.left.size)-1
+			}
+		}
+	}
 }
 
 // parentStack represents a stack of parent treap nodes that are used during

@@ -17,9 +17,9 @@ import (
 	"github.com/hybridnetwork/hxd/chaincfg"
 	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
 	"github.com/hybridnetwork/hxd/database"
+	dcrutil "github.com/hybridnetwork/hxd/hxutil"
 	"github.com/hybridnetwork/hxd/txscript"
 	"github.com/hybridnetwork/hxd/wire"
-	dcrutil "github.com/hybridnetwork/hxutil"
 )
 
 const (
@@ -93,7 +93,6 @@ type blockNode struct {
 	// remove stake nodes, so that the stake node itself may be pruneable
 	// to save memory while maintaining high throughput efficiency for the
 	// evaluation of sidechains.
-	stakeDataLock  sync.Mutex
 	stakeNode      *stake.Node
 	newTickets     []chainhash.Hash
 	stakeUndoData  stake.UndoTicketDataSlice
@@ -568,8 +567,6 @@ func (b *BlockChain) addOrphanBlock(block *dcrutil.Block) {
 	// Add to previous hash lookup index for faster dependency lookups.
 	prevHash := &block.MsgBlock().Header.PrevBlock
 	b.prevOrphans[*prevHash] = append(b.prevOrphans[*prevHash], oBlock)
-
-	return
 }
 
 // getGeneration gets a generation of blocks who all have the same parent by
@@ -599,7 +596,7 @@ func (b *BlockChain) getGeneration(h chainhash.Hash) ([]chainhash.Hash, error) {
 
 	// Store all the hashes in a new slice and return them.
 	lenChildren := len(p.children)
-	allChildren := make([]chainhash.Hash, lenChildren, lenChildren)
+	allChildren := make([]chainhash.Hash, lenChildren)
 	for i := 0; i < lenChildren; i++ {
 		allChildren[i] = p.children[i].hash
 	}

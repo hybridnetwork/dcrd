@@ -1,0 +1,51 @@
+[[constraint]]
+  branch = "master"
+  name = "github.com/agl/ed25519"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/btcsuite/btclog"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/btcsuite/go-socks"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/btcsuite/goleveldb"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/btcsuite/websocket"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/btcsuite/winsvc"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/davecgh/go-spew"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/dchest/blake256"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/hybridnetwork/base58"
+
+[[constraint]]
+  name = "github.com/jessevdk/go-flags"
+  version = "1.2.0"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/jrick/bitset"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/jrick/logrotate"
+
+[[constraint]]
+  branch = "master"
+  name = "golang.org/x/crypto"

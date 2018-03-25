@@ -37,24 +37,25 @@ import (
 	"github.com/hybridnetwork/bitset"
 	"github.com/hybridnetwork/hxd/blockchain"
 	"github.com/hybridnetwork/hxd/blockchain/stake"
+	"github.com/hybridnetwork/hxd/certgen"
 	"github.com/hybridnetwork/hxd/chaincfg"
 	"github.com/hybridnetwork/hxd/chaincfg/chainec"
 	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
 	"github.com/hybridnetwork/hxd/crypto/bliss"
 	"github.com/hybridnetwork/hxd/database"
 	"github.com/hybridnetwork/hxd/dcrjson"
+	dcrutil "github.com/hybridnetwork/hxd/hxutil"
 	"github.com/hybridnetwork/hxd/mempool"
 	"github.com/hybridnetwork/hxd/mining"
 	"github.com/hybridnetwork/hxd/txscript"
 	"github.com/hybridnetwork/hxd/wire"
-	dcrutil "github.com/hybridnetwork/hxutil"
 )
 
 // API version constants
 const (
-	jsonrpcSemverString = "3.1.0"
+	jsonrpcSemverString = "3.2.0"
 	jsonrpcSemverMajor  = 3
-	jsonrpcSemverMinor  = 1
+	jsonrpcSemverMinor  = 2
 	jsonrpcSemverPatch  = 0
 )
 
@@ -390,6 +391,13 @@ func rpcDeserializationError(fmtStr string, args ...interface{}) *dcrjson.RPCErr
 // rule error to an RPC error with the appropriate code set.
 func rpcRuleError(fmtStr string, args ...interface{}) *dcrjson.RPCError {
 	return dcrjson.NewRPCError(dcrjson.ErrRPCMisc,
+		fmt.Sprintf(fmtStr, args...))
+}
+
+// rpcDuplicateTxError is a convenience function to convert a
+// rejected duplicate tx  error to an RPC error with the appropriate code set.
+func rpcDuplicateTxError(fmtStr string, args ...interface{}) *dcrjson.RPCError {
+	return dcrjson.NewRPCError(dcrjson.ErrRPCDuplicateTx,
 		fmt.Sprintf(fmtStr, args...))
 }
 
@@ -1229,7 +1237,22 @@ func createVinList(mtx *wire.MsgTx) []dcrjson.Vin {
 		return vinList
 	}
 
+	// Stakebase transactions (votes) have two inputs: a null stake base
+	// followed by an input consuming a ticket's stakesubmission.
+	stakeTx, _ := stake.IsSSGen(mtx)
+
 	for i, txIn := range mtx.TxIn {
+		// Handle only the null input of a stakebase differently.
+		if stakeTx && i == 0 {
+			vinEntry := &vinList[0]
+			vinEntry.Stakebase = hex.EncodeToString(txIn.SignatureScript)
+			vinEntry.Sequence = txIn.Sequence
+			vinEntry.AmountIn = dcrutil.Amount(txIn.ValueIn).ToCoin()
+			vinEntry.BlockHeight = txIn.BlockHeight
+			vinEntry.BlockIndex = txIn.BlockIndex
+			continue
+		}
+
 		// The disassembled string will contain [error] inline
 		// if the script doesn't fully parse, so ignore the
 		// error here.
@@ -1452,7 +1475,9 @@ func handleDecodeScript(s *rpcServer, cmd interface{}, closeChan <-chan struct{}
 		ReqSigs:   int32(reqSigs),
 		Type:      scriptClass.String(),
 		Addresses: addresses,
-		P2sh:      p2sh.EncodeAddress(),
+	}
+	if scriptClass != txscript.ScriptHashTy {
+		reply.P2sh = p2sh.EncodeAddress()
 	}
 	return reply, nil
 }
@@ -2537,8 +2562,7 @@ func (state *gbtWorkState) blockTemplateResult(bm *blockManager, useCoinbaseValu
 			txTypeStr = "error"
 		}
 
-		fee := int64(0)
-		sigOps := int64(0)
+		var fee, sigOps int64
 		if !recalculateFeesAndSigsOps {
 			fee = template.Fees[i]
 			sigOps = template.SigOpCounts[i]
@@ -2644,8 +2668,7 @@ func (state *gbtWorkState) blockTemplateResult(bm *blockManager, useCoinbaseValu
 			txTypeStr = "revocation"
 		}
 
-		fee := int64(0)
-		sigOps := int64(0)
+		var fee, sigOps int64
 		if !recalculateFeesAndSigsOps {
 			// Check bounds and throw an error if OOB. This should
 			// be looked into further, probably it's the result of
@@ -3447,8 +3470,10 @@ func handleGetPeerInfo(s *rpcServer, cmd interface{}, closeChan <-chan struct{})
 		statsSnap := p.StatsSnapshot()
 		info := &dcrjson.GetPeerInfoResult{
 			ID:             statsSnap.ID,
-			Addr:           statsSnap.Addr,
+			Addr:           statsSnap.Addr
+			AddrLocal:      p.LocalAddr().String(),
 			Services:       fmt.Sprintf("%08d", uint64(statsSnap.Services)),
+			RelayTxes:      !p.disableRelayTx,
 			LastSend:       statsSnap.LastSend.Unix(),
 			LastRecv:       statsSnap.LastRecv.Unix(),
 			BytesSent:      statsSnap.BytesSent,
@@ -4171,7 +4196,11 @@ func handleGetWorkRequest(s *rpcServer) (interface{}, error) {
 		// Update the time of the block template to the current time
 		// while accounting for the median time of the past several
 		// blocks per the chain consensus rules.
-		UpdateBlockTime(msgBlock, s.server.blockManager)
+		err := UpdateBlockTime(msgBlock, s.server.blockManager)
+		if err != nil {
+			return nil, rpcInternalError(err.Error(),
+				"Failed to update block time")
+		}
 
 		if templateCopy.Height > 1 {
 			// Increment the extra nonce and update the block template
@@ -4341,7 +4370,7 @@ func handleGetWorkSubmission(s *rpcServer, hexData string) (interface{}, error) 
 	// nodes.  This will in turn relay it to the network like normal.
 	isOrphan, err := s.server.blockManager.ProcessBlock(block,
 		blockchain.BFNone)
-	if err != nil || isOrphan {
+	if err != nil {
 		// Anything other than a rule violation is an unexpected error,
 		// so return that error as an internal error.
 		if _, ok := err.(blockchain.RuleError); !ok {
@@ -4350,6 +4379,12 @@ func handleGetWorkSubmission(s *rpcServer, hexData string) (interface{}, error) 
 		}
 
 		rpcsLog.Infof("Block submitted via getwork rejected: %v", err)
+		return false, nil
+	}
+
+	if isOrphan {
+		rpcsLog.Infof("Block submitted via getwork rejected: an orphan building "+
+			"on parent %v", block.MsgBlock().Header.PrevBlock)
 		return false, nil
 	}
 
@@ -4569,6 +4604,12 @@ func fetchInputTxos(s *rpcServer, tx *wire.MsgTx) (map[wire.OutPoint]wire.TxOut,
 	mp := s.server.txMemPool
 	originOutputs := make(map[wire.OutPoint]wire.TxOut)
 	for txInIndex, txIn := range tx.TxIn {
+		voteTx, _ := stake.IsSSGen(tx)
+		// vote tx have null input for vin[0],
+		// skip since it resolvces to an invalid transaction
+		if voteTx && txInIndex == 0 {
+			continue
+		}
 		// Attempt to fetch and use the referenced transaction from the
 		// memory pool.
 		origin := &txIn.PreviousOutPoint
@@ -4663,7 +4704,24 @@ func createVinListPrevOut(s *rpcServer, mtx *wire.MsgTx, chainParams *chaincfg.P
 		}
 	}
 
-	for _, txIn := range mtx.TxIn {
+	// Stakebase transactions (votes) have two inputs: a null stake base
+	// followed by an input consuming a ticket's stakesubmission.
+	stakeTx, _ := stake.IsSSGen(mtx)
+
+	for i, txIn := range mtx.TxIn {
+		// Handle only the null input of a stakebase differently.
+		if stakeTx && i == 0 {
+			amountIn := dcrutil.Amount(txIn.ValueIn).ToCoin()
+			vinEntry := dcrjson.VinPrevOut{
+				Stakebase: hex.EncodeToString(txIn.SignatureScript),
+				AmountIn:  &amountIn,
+				Sequence:  txIn.Sequence,
+			}
+			vinList = append(vinList, vinEntry)
+			// No previous outpoints to check against the address filter.
+			continue
+		}
+
 		// The disassembled string will contain [error] inline if the
 		// script doesn't fully parse, so ignore the error here.
 		disbuf, _ := txscript.DisasmString(txIn.SignatureScript)
@@ -5076,6 +5134,15 @@ func handleSendRawTransaction(s *rpcServer, cmd interface{}, closeChan <-chan st
 			err = fmt.Errorf("Rejected transaction %v: %v", tx.Hash(),
 				err)
 			rpcsLog.Debugf("%v", err)
+			txRuleErr, ok := err.(mempool.TxRuleError)
+			if ok {
+				if txRuleErr.RejectCode == wire.RejectDuplicate {
+					// return a dublicate tx error
+					return nil, rpcDuplicateTxError("%v", err)
+				}
+			}
+
+			// return a generic rule error
 			return nil, rpcRuleError("%v", err)
 		}
 
@@ -5500,7 +5567,7 @@ func handleTicketVWAP(s *rpcServer, cmd interface{}, closeChan <-chan struct{}) 
 	// The default VWAP is for the past WorkDiffWindows * WorkDiffWindowSize
 	// many blocks.
 	_, bestHeight := s.server.blockManager.chainState.Best()
-	start := uint32(0)
+	var start uint32
 	if c.Start == nil {
 		toEval := activeNetParams.WorkDiffWindows *
 			activeNetParams.WorkDiffWindowSize
@@ -5588,7 +5655,7 @@ func handleTxFeeInfo(s *rpcServer, cmd interface{}, closeChan <-chan struct{}) (
 	// default range is for the past WorkDiffWindowSize many blocks.
 	var feeInfoRange dcrjson.FeeInfoRange
 
-	start := uint32(0)
+	var start uint32
 	if c.RangeStart == nil {
 		toEval := activeNetParams.WorkDiffWindowSize
 		startI64 := bestHeight - toEval
@@ -5838,11 +5905,6 @@ type rpcServer struct {
 	helpCacher             *helpCacher
 	requestProcessShutdown chan struct{}
 	quit                   chan int
-
-	// coin supply caching values
-	coinSupplyMtx    sync.Mutex
-	coinSupplyHeight int64
-	coinSupplyTotal  int64
 }
 
 // httpStatusLine returns a response Status-Line (RFC 2616 Section 6.1) for the
@@ -6291,7 +6353,7 @@ func genCertPair(certFile, keyFile string) error {
 
 	org := "dcrd autogenerated cert"
 	validUntil := time.Now().Add(10 * 365 * 24 * time.Hour)
-	cert, key, err := dcrutil.NewTLSCertPair(elliptic.P521(), org,
+	cert, key, err := certgen.NewTLSCertPair(elliptic.P521(), org,
 		validUntil, nil)
 	if err != nil {
 		return err
@@ -6340,7 +6402,7 @@ func newRPCServer(listenAddrs []string, policy *mining.Policy, s *server) (*rpcS
 
 	// Setup TLS if not disabled.
 	listenFunc := net.Listen
-	if !cfg.DisableTLS {
+	if !cfg.DisableListen && !cfg.DisableTLS {
 		// Generate the TLS cert and key file if both don't already
 		// exist.
 		if !fileExists(cfg.RPCKey) && !fileExists(cfg.RPCCert) {

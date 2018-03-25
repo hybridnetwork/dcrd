@@ -18,9 +18,9 @@ import (
 
 	"github.com/hybridnetwork/hxd/chaincfg"
 	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
+	dcrutil "github.com/hybridnetwork/hxd/hxutil"
+	"github.com/hybridnetwork/hxd/rpcclient"
 	"github.com/hybridnetwork/hxd/wire"
-	dcrrpcclient "github.com/hybridnetwork/hxrpcclient"
-	dcrutil "github.com/hybridnetwork/hxutil"
 )
 
 const (
@@ -81,9 +81,9 @@ type Harness struct {
 	// to.
 	ActiveNet *chaincfg.Params
 
-	Node     *dcrrpcclient.Client
+	Node     *rpcclient.Client
 	node     *node
-	handlers *dcrrpcclient.NotificationHandlers
+	handlers *rpcclient.NotificationHandlers
 
 	wallet *memWallet
 
@@ -100,11 +100,25 @@ type Harness struct {
 // used.
 //
 // NOTE: This function is safe for concurrent access.
-func New(activeNet *chaincfg.Params, handlers *dcrrpcclient.NotificationHandlers, extraArgs []string) (*Harness, error) {
+func New(activeNet *chaincfg.Params, handlers *rpcclient.NotificationHandlers, extraArgs []string) (*Harness, error) {
 	harnessStateMtx.Lock()
 	defer harnessStateMtx.Unlock()
 
-	harnessID := strconv.Itoa(int(numTestInstances))
+	// Add a flag for the appropriate network type based on the provided
+	// chain params.
+	switch activeNet.Net {
+	case wire.MainNet:
+		// No extra flags since mainnet is the default
+	case wire.TestNet2:
+		extraArgs = append(extraArgs, "--testnet")
+	case wire.SimNet:
+		extraArgs = append(extraArgs, "--simnet")
+	default:
+		return nil, fmt.Errorf("rpctest.New must be called with one " +
+			"of the supported chain networks")
+	}
+
+	harnessID := strconv.Itoa(numTestInstances)
 	nodeTestData, err := ioutil.TempDir("", "rpctest-"+harnessID)
 	if err != nil {
 		return nil, err
@@ -142,7 +156,7 @@ func New(activeNet *chaincfg.Params, handlers *dcrrpcclient.NotificationHandlers
 	numTestInstances++
 
 	if handlers == nil {
-		handlers = &dcrrpcclient.NotificationHandlers{}
+		handlers = &rpcclient.NotificationHandlers{}
 	}
 
 	// If a handler for the OnBlockConnected/OnBlockDisconnected callback
@@ -239,12 +253,10 @@ func (h *Harness) SetUp(createTestChain bool, numMatureOutputs uint32) error {
 	ticker := time.NewTicker(time.Millisecond * 100)
 out:
 	for {
-		select {
-		case <-ticker.C:
-			walletHeight := h.wallet.SyncedHeight()
-			if walletHeight == height {
-				break out
-			}
+		<-ticker.C
+		walletHeight := h.wallet.SyncedHeight()
+		if walletHeight == height {
+			break out
 		}
 	}
 
@@ -281,12 +293,12 @@ func (h *Harness) TearDown() error {
 // we're not able to establish a connection, this function returns with an
 // error.
 func (h *Harness) connectRPCClient() error {
-	var client *dcrrpcclient.Client
+	var client *rpcclient.Client
 	var err error
 
 	rpcConf := h.node.config.rpcConnConfig()
 	for i := 0; i < h.maxConnRetries; i++ {
-		if client, err = dcrrpcclient.New(&rpcConf, h.handlers); err != nil {
+		if client, err = rpcclient.New(&rpcConf, h.handlers); err != nil {
 			time.Sleep(time.Duration(i) * 50 * time.Millisecond)
 			continue
 		}
@@ -353,7 +365,7 @@ func (h *Harness) UnlockOutputs(inputs []*wire.TxIn) {
 // RPCConfig returns the harnesses current rpc configuration. This allows other
 // potential RPC clients created within tests to connect to a given test
 // harness instance.
-func (h *Harness) RPCConfig() dcrrpcclient.ConnConfig {
+func (h *Harness) RPCConfig() rpcclient.ConnConfig {
 	return h.node.config.rpcConnConfig()
 }
 

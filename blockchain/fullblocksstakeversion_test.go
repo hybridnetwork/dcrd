@@ -11,7 +11,7 @@ import (
 	"github.com/hybridnetwork/hxd/blockchain"
 	"github.com/hybridnetwork/hxd/blockchain/chaingen"
 	"github.com/hybridnetwork/hxd/chaincfg"
-	dcrutil "github.com/hybridnetwork/hxutil"
+	dcrutil "github.com/hybridnetwork/hxd/hxutil"
 )
 
 // TestStakeVersion ensures that the stake version field in the block header is

@@ -13,8 +13,8 @@ import (
 
 	"github.com/hybridnetwork/hxd/blockchain/stake"
 	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
+	dcrutil "github.com/hybridnetwork/hxd/hxutil"
 	"github.com/hybridnetwork/hxd/txscript"
-	dcrutil "github.com/hybridnetwork/hxutil"
 )
 
 // checkCoinbaseUniqueHeight checks to ensure that for all blocks height > 1
@@ -75,7 +75,7 @@ func IsFinalizedTransaction(tx *dcrutil.Tx, blockHeight int64, blockTime time.Ti
 	// which the transaction is finalized or a timestamp depending on if the
 	// value is before the txscript.LockTimeThreshold.  When it is under the
 	// threshold it is a block height.
-	blockTimeOrHeight := int64(0)
+	var blockTimeOrHeight int64
 	if lockTime < txscript.LockTimeThreshold {
 		blockTimeOrHeight = blockHeight
 	} else {
@@ -141,7 +141,6 @@ func (b *BlockChain) checkBlockContext(block *dcrutil.Block, prevNode *blockNode
 		if err != nil {
 			return err
 		}
-
 
 		// The height of this block is one more than the referenced
 		// previous block.

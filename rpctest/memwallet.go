@@ -15,11 +15,11 @@ import (
 	"github.com/hybridnetwork/hxd/chaincfg"
 	"github.com/hybridnetwork/hxd/chaincfg/chainec"
 	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
+	"github.com/hybridnetwork/hxd/hdkeychain"
+	dcrutil "github.com/hybridnetwork/hxd/hxutil"
+	"github.com/hybridnetwork/hxd/rpcclient"
 	"github.com/hybridnetwork/hxd/txscript"
 	"github.com/hybridnetwork/hxd/wire"
-	dcrrpcclient "github.com/hybridnetwork/hxrpcclient"
-	dcrutil "github.com/hybridnetwork/hxutil"
-	"github.com/hybridnetwork/hxutil/hdkeychain"
 )
 
 var (
@@ -103,7 +103,7 @@ type memWallet struct {
 
 	net *chaincfg.Params
 
-	rpc *dcrrpcclient.Client
+	rpc *rpcclient.Client
 
 	sync.RWMutex
 }
@@ -172,7 +172,7 @@ func (m *memWallet) SyncedHeight() int64 {
 
 // SetRPCClient saves the passed rpc connection to dcrd as the wallet's
 // personal rpc connection.
-func (m *memWallet) SetRPCClient(rpcClient *dcrrpcclient.Client) {
+func (m *memWallet) SetRPCClient(rpcClient *rpcclient.Client) {
 	m.rpc = rpcClient
 }
 
@@ -467,7 +467,7 @@ func (m *memWallet) CreateTransaction(outputs []*wire.TxOut, feeRate dcrutil.Amo
 	}
 
 	// Attempt to fund the transaction with spendable utxos.
-	if err := m.fundTx(tx, outputAmt, dcrutil.Amount(feeRate)); err != nil {
+	if err := m.fundTx(tx, outputAmt, feeRate); err != nil {
 		return nil, err
 	}
 

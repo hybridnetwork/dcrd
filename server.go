@@ -23,17 +23,17 @@ import (
 	"github.com/hybridnetwork/hxd/addrmgr"
 	"github.com/hybridnetwork/hxd/blockchain"
 	"github.com/hybridnetwork/hxd/blockchain/indexers"
+	"github.com/hybridnetwork/hxd/bloom"
 	"github.com/hybridnetwork/hxd/chaincfg"
 	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
 	"github.com/hybridnetwork/hxd/connmgr"
 	"github.com/hybridnetwork/hxd/database"
+	dcrutil "github.com/hybridnetwork/hxd/hxutil"
 	"github.com/hybridnetwork/hxd/mempool"
 	"github.com/hybridnetwork/hxd/mining"
 	"github.com/hybridnetwork/hxd/peer"
 	"github.com/hybridnetwork/hxd/txscript"
 	"github.com/hybridnetwork/hxd/wire"
-	dcrutil "github.com/hybridnetwork/hxutil"
-	"github.com/hybridnetwork/hxutil/bloom"
 )
 
 const (
@@ -1279,7 +1279,7 @@ func (s *server) handleAddPeerMsg(state *peerState, sp *serverPeer) bool {
 	if banEnd, ok := state.banned[host]; ok {
 		if time.Now().Before(banEnd) {
 			srvrLog.Debugf("Peer %s is banned for another %v - disconnecting",
-				host, banEnd.Sub(time.Now()))
+				host, time.Until(banEnd))
 			sp.Disconnect()
 			return false
 		}
@@ -2220,7 +2220,7 @@ out:
 func standardScriptVerifyFlags(chain *blockchain.BlockChain) (txscript.ScriptFlags, error) {
 	scriptFlags := mempool.BaseStandardVerifyFlags
 
-	// Enable additional txscript validation for consensus deployments if 
+	// Enable additional txscript validation for consensus deployments if
 	// the stake vote for the corresponding agenda is active.
 	// e.g. if featureIsActive(): scriptFlags |= txscript.SOME_SCRIPT_VERIFICATION
 
@@ -2303,6 +2303,9 @@ func newServer(listenAddrs []string, db database.DB, chainParams *chaincfg.Param
 				goto nowc
 			}
 			addrs, err := net.InterfaceAddrs()
+			if err != nil {
+				srvrLog.Warnf("Unable to get interface addresses: %v", err)
+			}
 			for _, a := range addrs {
 				ip, _, err := net.ParseCIDR(a.String())
 				if err != nil {
@@ -2498,7 +2501,7 @@ func newServer(listenAddrs []string, db database.DB, chainParams *chaincfg.Param
 
 				// only allow recent nodes (10mins) after we failed 30
 				// times
-				if tries < 30 && time.Now().Sub(addr.LastAttempt()) < 10*time.Minute {
+				if tries < 30 && time.Since(addr.LastAttempt()) < 10*time.Minute {
 					continue
 				}
 

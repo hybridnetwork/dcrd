@@ -11,8 +11,8 @@ import (
 	"github.com/hybridnetwork/hxd/chaincfg"
 	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
 	"github.com/hybridnetwork/hxd/database"
+	dcrutil "github.com/hybridnetwork/hxd/hxutil"
 	"github.com/hybridnetwork/hxd/txscript"
-	dcrutil "github.com/hybridnetwork/hxutil"
 )
 
 // CheckpointConfirmations is the number of blocks before the end of the current

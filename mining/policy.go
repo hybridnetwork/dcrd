@@ -5,7 +5,7 @@
 
 package mining
 
-import dcrutil "github.com/hybridnetwork/hxutil"
+import dcrutil "github.com/hybridnetwork/hxd/hxutil"
 
 // Policy houses the policy (configuration parameters) which is used to control
 // the generation of block templates.  See the documentation for

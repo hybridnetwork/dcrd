@@ -1,5 +1,5 @@
 // Copyright (c) 2015-2016 The btcsuite developers
-// Copyright (c) 2016 The Decred developers
+// Copyright (c) 2016-2017 The Decred developers
 // Use of this source code is governed by an ISC
 // license that can be found in the LICENSE file.
 
@@ -7,22 +7,9 @@ package tickettreap
 
 import (
 	"encoding/binary"
-	"encoding/hex"
 	"reflect"
 	"testing"
 )
-
-// fromHex converts the passed hex string into a byte slice and will panic if
-// there is an error.  This is only provided for the hard-coded constants so
-// errors in the source code can be detected. It will only (and must only) be
-// called for initialization purposes.
-func fromHex(s string) []byte {
-	r, err := hex.DecodeString(s)
-	if err != nil {
-		panic("invalid hex in source file: " + s)
-	}
-	return r
-}
 
 // serializeUint32 returns the big-endian encoding of the passed uint32.
 func serializeUint32(ui uint32) []byte {
@@ -36,6 +23,25 @@ func uint32ToKey(ui uint32) Key {
 	var key Key
 	binary.BigEndian.PutUint32(key[len(key)-4:], ui)
 	return key
+}
+
+// TestSizeValues are correct.
+func TestSizeValues(t *testing.T) {
+	var node treapNode
+	sizeOfNode := reflect.TypeOf(node).Size()
+	if sizeOfNode != nodeFieldsSize {
+		t.Errorf("Sizeof(treapNode) != nodeFieldsSize - %v != %v", sizeOfNode, nodeFieldsSize)
+	} else {
+		t.Log("All good nodeFieldsSize")
+	}
+
+	var v Value
+	sizeOfValue := reflect.TypeOf(v).Size()
+	if sizeOfValue != nodeValueSize {
+		t.Errorf("Sizeof(Value) != nodeValueSize - %v != %v", sizeOfValue, nodeValueSize)
+	} else {
+		t.Log("All good nodeValueSize")
+	}
 }
 
 // TestParentStack ensures the treapParentStack functionality works as intended.
@@ -120,9 +126,4 @@ testLoop:
 			continue testLoop
 		}
 	}
-}
-
-func init() {
-	// Force the same pseudo random numbers for each test run.
-	rng.Seed(0)
 }

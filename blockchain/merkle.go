@@ -9,7 +9,7 @@ import (
 	"math"
 
 	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
-	dcrutil "github.com/hybridnetwork/hxutil"
+	dcrutil "github.com/hybridnetwork/hxd/hxutil"
 )
 
 // nextPowerOfTwo returns the next highest power of two from a given number if

@@ -24,11 +24,11 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/decred/dcrutil"
-	"github.com/decred/dcrd/chaincfg"
+	dcrutil "github.com/hybridnetwork/hxd/hxutil"
+	"github.com/hybridnetwork/hxd/chaincfg"
 )
 
-var testnet = flag.Bool("testnet", false, "operate on the testnet Decred network")
+var testnet = flag.Bool("testnet", false, "operate on the testnet Hx network")
 
 // By default (without -testnet), use mainnet.
 var chainParams = &chaincfg.MainNetParams

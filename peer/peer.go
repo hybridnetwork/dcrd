@@ -687,6 +687,17 @@ func (p *Peer) LastRecv() time.Time {
 	return time.Unix(atomic.LoadInt64(&p.lastRecv), 0)
 }
 
+// LocalAddr returns the local address of the connection.
+//
+// This function is safe fo concurrent access.
+func (p *Peer) LocalAddr() net.Addr {
+	var localAddr net.Addr
+	if p.Connected() {
+		localAddr = p.conn.LocalAddr()
+	}
+	return localAddr
+}
+
 // BytesSent returns the total number of bytes sent by the peer.
 //
 // This function is safe for concurrent access.
@@ -1861,13 +1872,12 @@ func (p *Peer) AssociateConnection(conn net.Conn) {
 		p.na = na
 	}
 
-	go func() {
-		if err := p.start(); err != nil {
-			log.Debugf("Cannot start peer %v: %v", p, err)
-			p.Disconnect()
+	go func(peer *Peer) {
+		if err := peer.start(); err != nil {
+			log.Debugf("Cannot start peer %v: %v", peer, err)
+			peer.Disconnect()
 		}
-	}()
-}
+	}(p)
 
 // Connected returns whether or not the peer is currently connected.
 //
@@ -1896,7 +1906,7 @@ func (p *Peer) Disconnect() {
 func (p *Peer) start() error {
 	log.Tracef("Starting peer %s", p)
 
-	negotiateErr := make(chan error)
+	negotiateErr := make(chan error, 1)
 	go func() {
 		if p.inbound {
 			negotiateErr <- p.negotiateInboundProtocol()

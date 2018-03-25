@@ -10,9 +10,9 @@ import (
 	"math"
 	"runtime"
 
+	dcrutil "github.com/hybridnetwork/hxd/hxutil"
 	"github.com/hybridnetwork/hxd/txscript"
 	"github.com/hybridnetwork/hxd/wire"
-	dcrutil "github.com/hybridnetwork/hxutil"
 )
 
 // txValidateItem holds a transaction along with which input to validate.

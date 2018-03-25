@@ -27,8 +27,8 @@ import (
 
 	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
 	"github.com/hybridnetwork/hxd/database"
+	dcrutil "github.com/hybridnetwork/hxd/hxutil"
 	"github.com/hybridnetwork/hxd/wire"
-	dcrutil "github.com/hybridnetwork/hxutil"
 )
 
 var (
@@ -1719,7 +1719,6 @@ func testClosedTxInterface(tc *testContext, tx database.Tx) bool {
 	}
 
 	// Ensure Get returns expected error.
-	testName = "Get on closed tx"
 	if k := bucket.Get(keyName); k != nil {
 		tc.t.Errorf("Get: did not return nil on closed tx")
 		return false

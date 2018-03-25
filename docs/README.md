@@ -199,7 +199,7 @@ information.
 	  Hx scripts
     * [database](https://github.com/hybridnetwork/hxd/tree/master/database) -
 	  Provides a database interface for the Hx block chain
-    * [hxutil](https://github.com/hybridnetwork/hxutil) - Provides Hx-specific
+    * [hxutil](https://github.com/hybridnetwork/hxd/hxutil) - Provides Hx-specific
 	  convenience functions and types
     * [chainhash](https://github.com/hybridnetwork/hxd/tree/master/chaincfg/chainhash) -
 	  Provides a generic hash type and associated functions that allows the

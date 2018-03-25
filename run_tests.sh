@@ -20,11 +20,10 @@ set -ex
 GOVERSION=${1:-1.9}
 REPO=dcrd
 
-TESTCMD="test -z \"\$(gometalinter --disable-all \
+TESTCMD="test -z \"\$(gometalinter --vendor --disable-all \
   --enable=gofmt \
   --enable=vet \
   --enable=unconvert \
-  --vendor \
   --deadline=10m . 2>&1 | tee /dev/stderr)\"&& \
   env GORACE='halt_on_error=1' go test -short -race \
   -tags rpctest \
@@ -44,8 +43,8 @@ docker run --rm -it -v $(pwd):/src decred/$DOCKER_IMAGE_TAG /bin/bash -c "\
   rsync -ra --filter=':- .gitignore'  \
   /src/ /go/src/github.com/decred/$REPO/ && \
   cd github.com/decred/$REPO/ && \
-  glide install && \
-  go install \$(glide novendor) && \
+  dep ensure && \
+  go build ./examples/... && \
   $TESTCMD
 "
 

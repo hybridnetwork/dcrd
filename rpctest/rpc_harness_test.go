@@ -17,9 +17,9 @@ import (
 	"github.com/hybridnetwork/hxd/chaincfg"
 	"github.com/hybridnetwork/hxd/chaincfg/chainhash"
 	"github.com/hybridnetwork/hxd/dcrjson"
+	dcrutil "github.com/hybridnetwork/hxd/hxutil"
 	"github.com/hybridnetwork/hxd/txscript"
 	"github.com/hybridnetwork/hxd/wire"
-	dcrutil "github.com/hybridnetwork/hxutil"
 )
 
 const (
@@ -213,6 +213,9 @@ func testJoinMempools(r *Harness, t *testing.T) {
 	// Generate a coinbase spend to a new address within the main harness'
 	// mempool.
 	addr, err := r.NewAddress()
+	if err != nil {
+		t.Fatalf("unable to get new address: %v", err)
+	}
 	addrScript, err := txscript.PayToAddrScript(addr)
 	if err != nil {
 		t.Fatalf("unable to generate pkscript to addr: %v", err)
