@@ -772,6 +772,82 @@ func (b *BlockChain) findNode(nodeHash *chainhash.Hash, searchDepth int) (*block
 	return node, err
 }
 
+// fetchMainChainBlockByHash returns the block from the main chain with the
+// given hash.  It first attempts to use cache and then falls back to loading it
+// from the database.
+//
+// An error is returned if the block is either not found or not in the main
+// chain.
+//
+// This function is safe for concurrent access.
+func (b *BlockChain) fetchMainChainBlockByHash(hash *chainhash.Hash) (*dcrutil.Block, error) {
+	b.mainchainBlockCacheLock.RLock()
+	block, ok := b.mainchainBlockCache[*hash]
+	b.mainchainBlockCacheLock.RUnlock()
+	if ok {
+		return block, nil
+	}
+
+	// Load the block from the database.
+	err := b.db.View(func(dbTx database.Tx) error {
+		var err error
+		block, err = dbFetchBlockByHash(dbTx, hash)
+		return err
+	})
+	return block, err
+}
+
+// fetchBlockByHash returns the block with the given hash from all known sources
+// such as the internal caches and the database.
+//
+// This function is safe for concurrent access.
+func (b *BlockChain) fetchBlockByHash(hash *chainhash.Hash) (*dcrutil.Block, error) {
+	// Check orphan cache.
+	b.orphanLock.RLock()
+	orphan, existsOrphans := b.orphans[*hash]
+	b.orphanLock.RUnlock()
+	if existsOrphans {
+		return orphan.block, nil
+	}
+
+	// Check main chain cache.
+	b.mainchainBlockCacheLock.RLock()
+	block, ok := b.mainchainBlockCache[*hash]
+	b.mainchainBlockCacheLock.RUnlock()
+	if ok {
+		return block, nil
+	}
+
+	// Attempt to load the block from the database.
+	err := b.db.View(func(dbTx database.Tx) error {
+		// NOTE: This does not use the dbFetchBlockByHash function since that
+		// function only works with main chain blocks.
+		blockBytes, err := dbTx.FetchBlock(hash)
+		if err != nil {
+			return err
+		}
+
+		block, err = dcrutil.NewBlockFromBytes(blockBytes)
+		return err
+	})
+	if err == nil && block != nil {
+		return block, nil
+	}
+
+	return nil, fmt.Errorf("unable to find block %v in cache or db", hash)
+}
+
+// FetchBlockByHash searches the internal chain block stores and the database
+// in an attempt to find the requested block.
+//
+// This function differs from BlockByHash in that this one also returns blocks
+// that are not part of the main chain (if they are known).
+//
+// This function is safe for concurrent access.
+func (b *BlockChain) FetchBlockByHash(hash *chainhash.Hash) (*dcrutil.Block, error) {
+	return b.fetchBlockByHash(hash)
+}
+
 // getPrevNodeFromBlock returns a block node for the block previous to the
 // passed block (the passed block's parent).  When it is already in the memory
 // block chain, it simply returns it.  Otherwise, it loads the previous block
