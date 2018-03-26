@@ -902,7 +902,8 @@ func handleTooFewVoters(subsidyCache *blockchain.SubsidyCache,
 				// and the contents of that stake tree. In the future
 				// we should have the option of readding some
 				// transactions from this block, too.
-				topBlock, err := bm.chain.FetchBlockFromHash(&prevBlockHash)
+				bestHash, _ := chainState.Best()
+				topBlock, err := bm.chain.FetchBlockByHash(bestHash)
 				if err != nil {
 					str := fmt.Sprintf("unable to get tip block %s",
 						prevBlockHash)
@@ -913,6 +914,8 @@ func handleTooFewVoters(subsidyCache *blockchain.SubsidyCache,
 				if err != nil {
 					return nil, err
 				}
+				coinbaseScript := make([]byte, len(coinbaseFlags)+2)
+				copy(coinbaseScript[2:], coinbaseFlags)
 				opReturnPkScript, err :=
 					standardCoinbaseOpReturn(topBlock.MsgBlock().Header.Height,
 						[]uint64{0, 0, 0, rand})
@@ -920,7 +923,7 @@ func handleTooFewVoters(subsidyCache *blockchain.SubsidyCache,
 					return nil, err
 				}
 				coinbaseTx, err := createCoinbaseTx(subsidyCache,
-					[]byte{0x01, 0x02},
+					coinbaseScript,
 					opReturnPkScript,
 					topBlock.Height(),
 					miningAddress,
