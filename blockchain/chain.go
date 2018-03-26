@@ -945,7 +945,7 @@ func (b *BlockChain) ancestorNode(node *blockNode, height int64) (*blockNode, er
 // GetTopBlock returns the current block at HEAD on the blockchain.  Needed
 // for mining in the daemon.
 func (b *BlockChain) GetTopBlock() (*dcrutil.Block, error) {
-	block, err := b.fetchBlockFromHash(&b.bestNode.hash)
+	block, err := b.fetchBlockByHash(&b.bestNode.hash)
 	return block, err
 }
 
@@ -1194,7 +1194,7 @@ func (b *BlockChain) connectBlock(node *blockNode, block *dcrutil.Block, view *U
 	}
 
 	// Sanity check the correct number of stxos are provided.
-	parent, err := b.fetchBlockFromHash(&node.parent.hash)
+	parent, err := b.fetchBlockByHash(&node.parent.hash)
 	if err != nil {
 		return err
 	}
@@ -1405,7 +1405,7 @@ func (b *BlockChain) disconnectBlock(node *blockNode, block *dcrutil.Block, view
 	}
 
 	// Load the previous block since some details for it are needed below.
-	parent, err := b.fetchBlockFromHash(&prevNode.hash)
+	parent, err := b.fetchBlockByHash(&prevNode.hash)
 	if err != nil {
 		return err
 	}
@@ -1621,11 +1621,11 @@ func (b *BlockChain) reorganizeChain(detachNodes, attachNodes *list.List,
 		var block *dcrutil.Block
 		var parent *dcrutil.Block
 		var err error
-		block, err = b.fetchBlockFromHash(&n.hash)
+		block, err = b.fetchBlockByHash(&n.hash)
 		if err != nil {
 			return err
 		}
-		parent, err = b.fetchBlockFromHash(&n.header.PrevBlock)
+		parent, err = b.fetchBlockByHash(&n.header.PrevBlock)
 		if err != nil {
 			return err
 		}
@@ -1725,7 +1725,7 @@ func (b *BlockChain) reorganizeChain(detachNodes, attachNodes *list.List,
 	for i, e := 0, detachNodes.Front(); e != nil; i, e = i+1, e.Next() {
 		n := e.Value.(*blockNode)
 		block := detachBlocks[i]
-		parent, err := b.fetchBlockFromHash(&n.header.PrevBlock)
+		parent, err := b.fetchBlockByHash(&n.header.PrevBlock)
 		if err != nil {
 			return err
 		}
@@ -1759,7 +1759,7 @@ func (b *BlockChain) reorganizeChain(detachNodes, attachNodes *list.List,
 		block := b.blockCache[n.hash]
 		b.blockCacheLock.RUnlock()
 
-		parent, err := b.fetchBlockFromHash(&n.header.PrevBlock)
+		parent, err := b.fetchBlockByHash(&n.header.PrevBlock)
 		if err != nil {
 			return err
 		}
@@ -1832,7 +1832,7 @@ func (b *BlockChain) forceHeadReorganization(formerBest chainhash.Hash, newBest 
 			"common parent for forced reorg")
 	}
 
-	newBestBlock, err := b.fetchBlockFromHash(&newBest)
+	newBestBlock, err := b.fetchBlockByHash(&newBest)
 	if err != nil {
 		return err
 	}
@@ -1842,11 +1842,11 @@ func (b *BlockChain) forceHeadReorganization(formerBest chainhash.Hash, newBest 
 	view.SetBestHash(&b.bestNode.header.PrevBlock)
 	view.SetStakeViewpoint(ViewpointPrevValidInitial)
 
-	formerBestBlock, err := b.fetchBlockFromHash(&formerBest)
+	formerBestBlock, err := b.fetchBlockByHash(&formerBest)
 	if err != nil {
 		return err
 	}
-	commonParentBlock, err := b.fetchBlockFromHash(&formerBestNode.parent.hash)
+	commonParentBlock, err := b.fetchBlockByHash(&formerBestNode.parent.hash)
 	if err != nil {
 		return err
 	}
@@ -1927,7 +1927,7 @@ func (b *BlockChain) connectBestChain(node *blockNode, block *dcrutil.Block, fla
 		// Fetch the best block, now the parent, to be able to
 		// connect the txTreeRegular if needed.
 		// TODO optimize by not fetching if not needed?
-		parent, err := b.fetchBlockFromHash(&node.header.PrevBlock)
+		parent, err := b.fetchBlockByHash(&node.header.PrevBlock)
 		if err != nil {
 			return false, err
 		}
