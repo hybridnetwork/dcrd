@@ -2355,7 +2355,7 @@ func (b *BlockChain) checkConnectBlock(node *blockNode, block *dcrutil.Block, ut
 	// allowed a block that is no longer valid.  However, since the
 	// implementation only currently uses memory for the side chain blocks,
 	// it isn't currently necessary.
-	parentBlock, err := b.fetchBlockFromHash(&node.header.PrevBlock)
+	parentBlock, err := b.fetchBlockByHash(&node.header.PrevBlock)
 	if err != nil {
 		return ruleError(ErrMissingParent, err.Error())
 	}
@@ -2641,12 +2641,12 @@ func (b *BlockChain) CheckConnectBlock(block *dcrutil.Block) error {
 	var stxos []spentTxOut
 	for e := detachNodes.Front(); e != nil; e = e.Next() {
 		n := e.Value.(*blockNode)
-		block, err := b.fetchBlockFromHash(&n.hash)
+		block, err := b.fetchBlockByHash(&n.hash)
 		if err != nil {
 			return err
 		}
 
-		parent, err := b.fetchBlockFromHash(&n.header.PrevBlock)
+		parent, err := b.fetchBlockByHash(&n.header.PrevBlock)
 		if err != nil {
 			return err
 		}
@@ -2690,7 +2690,7 @@ func (b *BlockChain) CheckConnectBlock(block *dcrutil.Block) error {
 				n.hash)
 		}
 
-		parent, err := b.fetchBlockFromHash(&n.header.PrevBlock)
+		parent, err := b.fetchBlockByHash(&n.header.PrevBlock)
 		if err != nil {
 			return err
 		}

@@ -942,58 +942,6 @@ func (b *BlockChain) ancestorNode(node *blockNode, height int64) (*blockNode, er
 	return iterNode, nil
 }
 
-// fetchBlockFromHash searches the internal chain block stores and the database in
-// an attempt to find the block.  If it finds the block, it returns it.
-//
-// This function is NOT safe for concurrent access.
-func (b *BlockChain) fetchBlockFromHash(hash *chainhash.Hash) (*dcrutil.Block,
-	error) {
-	// Check side chain block cache
-	b.blockCacheLock.RLock()
-	blockSidechain, existsSidechain := b.blockCache[*hash]
-	b.blockCacheLock.RUnlock()
-	if existsSidechain {
-		return blockSidechain, nil
-	}
-
-	// Check orphan cache
-	b.orphanLock.RLock()
-	orphan, existsOrphans := b.orphans[*hash]
-	b.orphanLock.RUnlock()
-	if existsOrphans {
-		return orphan.block, nil
-	}
-
-	// Check main chain
-	b.mainchainBlockCacheLock.RLock()
-	block, ok := b.mainchainBlockCache[*hash]
-	b.mainchainBlockCacheLock.RUnlock()
-	if ok {
-		return block, nil
-	}
-
-	var blockMainchain *dcrutil.Block
-	errFetchMainchain := b.db.View(func(dbTx database.Tx) error {
-		var err error
-		blockMainchain, err = dbFetchBlockByHash(dbTx, hash)
-		return err
-	})
-	if errFetchMainchain == nil && blockMainchain != nil {
-		return blockMainchain, nil
-	}
-
-	// Implicit !existsMainchain && !existsSidechain && !existsOrphans
-	return nil, fmt.Errorf("unable to find block %v in "+
-		"side chain cache, orphan cache, and main chain db", hash)
-}
-
-// FetchBlockFromHash is the generalized and exported version of
-// fetchBlockFromHash.  It is safe for concurrent access.
-func (b *BlockChain) FetchBlockFromHash(hash *chainhash.Hash) (*dcrutil.Block,
-	error) {
-	return b.fetchBlockFromHash(hash)
-}
-
 // GetTopBlock returns the current block at HEAD on the blockchain.  Needed
 // for mining in the daemon.
 func (b *BlockChain) GetTopBlock() (*dcrutil.Block, error) {

@@ -1745,9 +1745,7 @@ mempoolLoop:
 
 			// Retrieve the current top block, whose TxTreeRegular was voted
 			// out.
-			// Decred TODO: This is super inefficient, this block should be
-			// cached and stored somewhere.
-			topBlock, err := blockManager.chain.FetchBlockFromHash(prevHash)
+			topBlock, err := blockManager.chain.FetchBlockByHash(prevHash)
 			if err != nil {
 				str := fmt.Sprintf("unable to get tip block %s", prevHash)
 				return nil, miningRuleError(ErrGetTopBlock, str)
