@@ -1878,6 +1878,7 @@ func (p *Peer) AssociateConnection(conn net.Conn) {
 			peer.Disconnect()
 		}
 	}(p)
+}
 
 // Connected returns whether or not the peer is currently connected.
 //

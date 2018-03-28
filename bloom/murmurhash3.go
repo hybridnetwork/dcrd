@@ -24,7 +24,7 @@ const (
 // is suitable for general hash-based lookups.  The seed can be used to
 // effectively randomize the hash function.  This makes it ideal for use in
 // bloom filters which need multiple independent hash functions.
-func MurmurHash3(seed uint32, data []byte) uint32
+func MurmurHash3(seed uint32, data []byte) uint32 {
 	var k uint32
 	dataLen := uint32(len(data))
 	hash := seed
@@ -62,7 +62,7 @@ func MurmurHash3(seed uint32, data []byte) uint32
 	}
 
 	// Finalization.
-	hash ^= uint32(dataLen)
+	hash ^= dataLen
 	hash ^= hash >> 16
 	hash *= 0x85ebca6b
 	hash ^= hash >> 13
