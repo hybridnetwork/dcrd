@@ -902,17 +902,20 @@ func handleTooFewVoters(subsidyCache *blockchain.SubsidyCache,
 				// and the contents of that stake tree. In the future
 				// we should have the option of readding some
 				// transactions from this block, too.
-				topBlock, err :=
-					bm.GetTopBlockFromChain()
+				bestHash, _ := chainState.Best()
+				topBlock, err := bm.chain.FetchBlockByHash(bestHash)
 				if err != nil {
-					return nil, fmt.Errorf("failed to get top block from " +
-						"chain")
+					str := fmt.Sprintf("unable to get tip block %s",
+						prevBlockHash)
+					return nil, miningRuleError(ErrGetTopBlock, str)
 				}
 				btMsgBlock := new(wire.MsgBlock)
 				rand, err := wire.RandomUint64()
 				if err != nil {
 					return nil, err
 				}
+				coinbaseScript := make([]byte, len(coinbaseFlags)+2)
+				copy(coinbaseScript[2:], coinbaseFlags)
 				opReturnPkScript, err :=
 					standardCoinbaseOpReturn(topBlock.MsgBlock().Header.Height,
 						[]uint64{0, 0, 0, rand})
@@ -920,7 +923,7 @@ func handleTooFewVoters(subsidyCache *blockchain.SubsidyCache,
 					return nil, err
 				}
 				coinbaseTx, err := createCoinbaseTx(subsidyCache,
-					[]byte{0x01, 0x02},
+					coinbaseScript,
 					opReturnPkScript,
 					topBlock.Height(),
 					miningAddress,
@@ -1208,7 +1211,7 @@ func NewBlockTemplate(policy *mining.Policy, server *server,
 
 	if nextBlockHeight >= stakeValidationHeight {
 		// Obtain the entire generation of blocks stemming from this parent.
-		children, err := blockManager.GetGeneration(*prevHash)
+		children, err := blockManager.TipGeneration()
 		if err != nil {
 			return nil, miningRuleError(ErrFailedToGetGeneration, err.Error())
 		}
@@ -1742,12 +1745,10 @@ mempoolLoop:
 
 			// Retrieve the current top block, whose TxTreeRegular was voted
 			// out.
-			// Decred TODO: This is super inefficient, this block should be
-			// cached and stored somewhere.
-			topBlock, err := blockManager.GetTopBlockFromChain()
+			topBlock, err := blockManager.chain.FetchBlockByHash(prevHash)
 			if err != nil {
-				return nil, miningRuleError(ErrGetTopBlock, "couldn't get "+
-					"top block")
+				str := fmt.Sprintf("unable to get tip block %s", prevHash)
+				return nil, miningRuleError(ErrGetTopBlock, str)
 			}
 			topBlockRegTx := topBlock.Transactions()
 

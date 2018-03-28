@@ -1674,7 +1674,7 @@ func (b *BlockChain) BlockByHash(hash *chainhash.Hash) (*dcrutil.Block, error) {
 	b.chainLock.RLock()
 	defer b.chainLock.RUnlock()
 
-	return b.fetchBlockFromHash(hash)
+	return b.fetchBlockByHash(hash)
 }
 
 // HeightRange returns a range of block hashes for the given start and end

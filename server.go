@@ -464,7 +464,7 @@ func (sp *serverPeer) OnGetMiningState(p *peer.Peer, msg *wire.MsgGetMiningState
 
 	// Obtain the entire generation of blocks stemming from the parent of
 	// the current tip.
-	children, err := bm.GetGeneration(*newest)
+	children, err := bm.TipGeneration()
 	if err != nil {
 		peerLog.Warnf("failed to access block manager to get the generation "+
 			"for a mining state request (block: %v): %v", newest, err)
@@ -1127,7 +1127,7 @@ func (s *server) pushTxMsg(sp *serverPeer, hash *chainhash.Hash, doneChan chan<-
 // pushBlockMsg sends a block message for the provided block hash to the
 // connected peer.  An error is returned if the block hash is not known.
 func (s *server) pushBlockMsg(sp *serverPeer, hash *chainhash.Hash, doneChan chan<- struct{}, waitChan <-chan struct{}) error {
-	block, err := sp.server.blockManager.chain.FetchBlockFromHash(hash)
+	block, err := sp.server.blockManager.chain.FetchBlockByHash(hash)
 	if err != nil {
 		peerLog.Tracef("Unable to fetch requested block hash %v: %v",
 			hash, err)
