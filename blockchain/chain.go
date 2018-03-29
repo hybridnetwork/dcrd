@@ -802,6 +802,14 @@ func (b *BlockChain) fetchMainChainBlockByHash(hash *chainhash.Hash) (*dcrutil.B
 //
 // This function is safe for concurrent access.
 func (b *BlockChain) fetchBlockByHash(hash *chainhash.Hash) (*dcrutil.Block, error) {
+	// Check side chain block cache.
+	b.blockCacheLock.RLock()
+	block, existsSidechain := b.blockCache[*hash]
+	b.blockCacheLock.RUnlock()
+	if existsSidechain {
+		return block, nil
+	}
+
 	// Check orphan cache.
 	b.orphanLock.RLock()
 	orphan, existsOrphans := b.orphans[*hash]
@@ -828,7 +836,11 @@ func (b *BlockChain) fetchBlockByHash(hash *chainhash.Hash) (*dcrutil.Block, err
 		}
 
 		block, err = dcrutil.NewBlockFromBytes(blockBytes)
-		return err
+		if err != nil {
+			return err
+		}
+
+		return nil
 	})
 	if err == nil && block != nil {
 		return block, nil
@@ -945,8 +957,7 @@ func (b *BlockChain) ancestorNode(node *blockNode, height int64) (*blockNode, er
 // GetTopBlock returns the current block at HEAD on the blockchain.  Needed
 // for mining in the daemon.
 func (b *BlockChain) GetTopBlock() (*dcrutil.Block, error) {
-	block, err := b.fetchBlockByHash(&b.bestNode.hash)
-	return block, err
+	return b.fetchMainChainBlockByHash(&b.bestNode.hash)
 }
 
 // pruneStakeNodes removes references to old stake nodes which should no
