@@ -836,11 +836,7 @@ func (b *BlockChain) fetchBlockByHash(hash *chainhash.Hash) (*dcrutil.Block, err
 		}
 
 		block, err = dcrutil.NewBlockFromBytes(blockBytes)
-		if err != nil {
-			return err
-		}
-
-		return nil
+		return err
 	})
 	if err == nil && block != nil {
 		return block, nil
@@ -1857,7 +1853,7 @@ func (b *BlockChain) forceHeadReorganization(formerBest chainhash.Hash, newBest 
 	if err != nil {
 		return err
 	}
-	commonParentBlock, err := b.fetchBlockByHash(&formerBestNode.parent.hash)
+	commonParentBlock, err := b.fetchMainChainBlockByHash(&formerBestNode.parent.hash)
 	if err != nil {
 		return err
 	}
