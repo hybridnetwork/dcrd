@@ -471,7 +471,7 @@ var MainNetParams = Params{
 	RetargetAdjustmentFactor: 4,
 
 	// Subsidy parameters.
-	BaseSubsidy:              3119582664, // 21m
+	BaseSubsidy:              6368783988, // ~84m = Premine + Total subsidy
 	MulSubsidy:               100,
 	DivSubsidy:               101,
 	SubsidyReductionInterval: 6144,
@@ -556,15 +556,15 @@ var TestNet2Params = Params{
 	Name:        "testnet2",
 	Net:         wire.TestNet2,
 	DefaultPort: "12008",
-	DNSSeeds: []string{},
+	DNSSeeds:    []string{},
 
 	// Chain parameters
 	GenesisBlock:             &testNet2GenesisBlock,
 	GenesisHash:              &testNet2GenesisHash,
 	PowLimit:                 testNetPowLimit,
 	PowLimitBits:             0x1e00ffff,
-	ReduceMinDifficulty:      true,
-	MinDiffReductionTime:     time.Minute * 30, // Does not apply since ReduceMinDifficulty false
+	ReduceMinDifficulty:      false,
+	MinDiffReductionTime:     0, // Does not apply since ReduceMinDifficulty false
 	GenerateSupported:        true,
 	MaximumBlockSizes:        []int{1310720},
 	MaxTxSize:                1000000,
@@ -576,7 +576,7 @@ var TestNet2Params = Params{
 	RetargetAdjustmentFactor: 4,
 
 	// Subsidy parameters.
-	BaseSubsidy:              88596147658, // ~886 Coin
+	BaseSubsidy:              6368783988,
 	MulSubsidy:               100,
 	DivSubsidy:               101,
 	SubsidyReductionInterval: 2048,
